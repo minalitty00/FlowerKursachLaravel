@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // CSRF protection is enabled by default for web routes
         // Ensure API routes have proper CORS headers
         $middleware->validateCsrfTokens(except: [
-            // API routes are excluded from CSRF as they use token auth
+            'api/*', // Exclude all API routes from CSRF protection
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

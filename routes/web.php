@@ -5,10 +5,15 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductWebController;
 use App\Http\Controllers\OrderWebController;
 use App\Http\Controllers\AuthWebController;
+use App\Http\Controllers\ApiDocsController;
 use Illuminate\Support\Facades\Route;
 
 // Home page
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// API Documentation
+Route::get('/api-docs', [ApiDocsController::class, 'index'])->name('api.docs');
+Route::get('/openapi.json', [ApiDocsController::class, 'spec'])->name('api.spec');
 
 // Authentication routes
 Route::middleware('guest')->group(function () {

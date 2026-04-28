@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4acbac16f0f4dead9995488667007fd6",
+    "content-hash": "eea08cda656985ecb62f433ded34748e",
     "packages": [
         {
             "name": "brick/math",
@@ -6071,6 +6071,194 @@
                 }
             ],
             "time": "2024-11-21T01:49:47+00:00"
+        },
+        {
+            "name": "wadakatu/laravel-spectrum",
+            "version": "v0.0.18-alpha",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wadakatu/laravel-spectrum.git",
+                "reference": "1244438012e9af38b225e70944d3fcbd94520f55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wadakatu/laravel-spectrum/zipball/1244438012e9af38b225e70944d3fcbd94520f55",
+                "reference": "1244438012e9af38b225e70944d3fcbd94520f55",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^10.0|^11.0|^12.0",
+                "illuminate/routing": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "nikic/php-parser": "^5.5",
+                "php": "^8.1",
+                "symfony/finder": "^6.0|^7.0",
+                "workerman/workerman": "^4.1|^5.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.23",
+                "orchestra/testbench": "^8.0|^9.0|^10.0",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^10.0|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaravelSpectrum\\SpectrumServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaravelSpectrum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "wadakatu",
+                    "email": "wadakatukoyo330@gmail.com"
+                }
+            ],
+            "description": "Zero-annotation API documentation generator for Laravel and Lumen",
+            "homepage": "https://github.com/wadakatu/laravel-spectrum",
+            "keywords": [
+                "api",
+                "documentation",
+                "generator",
+                "laravel",
+                "lumen",
+                "openapi",
+                "swagger",
+                "zero-annotation"
+            ],
+            "support": {
+                "changelog": "https://github.com/wadakatu/laravel-spectrum/releases",
+                "docs": "https://github.com/wadakatu/laravel-spectrum#readme",
+                "issues": "https://github.com/wadakatu/laravel-spectrum/issues",
+                "source": "https://github.com/wadakatu/laravel-spectrum"
+            },
+            "time": "2025-07-23T18:26:36+00:00"
+        },
+        {
+            "name": "workerman/coroutine",
+            "version": "v1.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/workerman-php/coroutine.git",
+                "reference": "b60e44267b90d398dbfa7a320f3e97b46357ac9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/workerman-php/coroutine/zipball/b60e44267b90d398dbfa7a320f3e97b46357ac9f",
+                "reference": "b60e44267b90d398dbfa7a320f3e97b46357ac9f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "workerman/workerman": "^5.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.0",
+                "psr/log": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Workerman\\": "src",
+                    "Workerman\\Coroutine\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Workerman coroutine",
+            "support": {
+                "issues": "https://github.com/workerman-php/coroutine/issues",
+                "source": "https://github.com/workerman-php/coroutine/tree/v1.1.5"
+            },
+            "time": "2026-03-12T02:07:37+00:00"
+        },
+        {
+            "name": "workerman/workerman",
+            "version": "v5.1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/walkor/workerman.git",
+                "reference": "6ecda94609c40ade0f1e548535d24d8e09e67409"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/walkor/workerman/zipball/6ecda94609c40ade0f1e548535d24d8e09e67409",
+                "reference": "6ecda94609c40ade0f1e548535d24d8e09e67409",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=8.1",
+                "workerman/coroutine": "^1.1 || dev-main"
+            },
+            "conflict": {
+                "ext-swow": "<v1.0.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.10",
+                "mockery/mockery": "^1.6",
+                "pestphp/pest": "^2.36 || ^3 || ^4",
+                "phpstan/phpstan": "^2.1"
+            },
+            "suggest": {
+                "ext-event": "For better performance. "
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Workerman\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "walkor",
+                    "email": "walkor@workerman.net",
+                    "homepage": "https://www.workerman.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An asynchronous event driven PHP framework for easily building fast, scalable network applications.",
+            "homepage": "https://www.workerman.net",
+            "keywords": [
+                "asynchronous",
+                "event-loop",
+                "framework",
+                "http"
+            ],
+            "support": {
+                "email": "walkor@workerman.net",
+                "forum": "https://www.workerman.net/questions",
+                "issues": "https://github.com/walkor/workerman/issues",
+                "source": "https://github.com/walkor/workerman",
+                "wiki": "https://www.workerman.net/doc/workerman/"
+            },
+            "funding": [
+                {
+                    "url": "https://opencollective.com/workerman",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/walkor",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2026-03-20T09:38:10+00:00"
         }
     ],
     "packages-dev": [
@@ -8451,7 +8639,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "wadakatu/laravel-spectrum": 15
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

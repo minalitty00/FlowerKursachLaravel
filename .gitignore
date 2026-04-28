@@ -21,3 +21,14 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Spectrum cache
+/storage/app/spectrum/cache
+
+# Test files (optional - remove if you want to commit them)
+/public/test-api-docs.html
+
+# Database backups (keep only the structure file)
+*.sql
+!database_backup.sql
+flowershopdb_backup_*.sql
