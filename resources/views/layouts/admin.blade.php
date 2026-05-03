@@ -237,32 +237,32 @@
             <ul class="sidebar-menu">
                 <li>
                     <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        📊 Панель управления
+                        Панель управления
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.products.index') }}" class="{{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                        🌺 Товары
+                        Товары
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                        📁 Категории
+                        Категории
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                        📦 Заказы
+                        Заказы
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.revenue') }}" class="{{ request()->routeIs('admin.revenue') ? 'active' : '' }}">
-                        💰 Отчеты о выручке
+                        Отчеты о выручке
                     </a>
                 </li>
                 <li style="margin-top: 2rem; border-top: 1px solid #34495e; padding-top: 1rem;">
                     <a href="{{ route('home') }}">
-                        🏠 Вернуться в магазин
+                        Вернуться в магазин
                     </a>
                 </li>
             </ul>

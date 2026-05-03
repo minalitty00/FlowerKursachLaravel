@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manage Orders')
+@section('title', 'Управление заказами')
 
 @section('content')
 <style>
@@ -89,20 +89,20 @@
     }
 </style>
 
-<h2 style="margin-bottom: 2rem;">Manage Orders</h2>
+<h2 style="margin-bottom: 2rem;">Управление заказами</h2>
 
 <div class="orders-table-container">
     @if($orders->count() > 0)
         <table class="orders-table">
             <thead>
                 <tr>
-                    <th>Order #</th>
-                    <th>Customer</th>
+                    <th>Заказ №</th>
+                    <th>Клиент</th>
                     <th>Email</th>
-                    <th>Date</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Дата</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
@@ -111,22 +111,27 @@
                         <td>{{ $order->order_number }}</td>
                         <td>{{ $order->customer_name }}</td>
                         <td>{{ $order->customer_email }}</td>
-                        <td>{{ $order->created_at->format('M d, Y H:i') }}</td>
-                        <td>${{ number_format($order->total_amount, 2) }}</td>
+                        <td>{{ $order->created_at->format('d.m.Y H:i') }}</td>
+                        <td>{{ format_price($order->total_amount) }}</td>
                         <td>
                             <span class="status-badge status-{{ $order->status }}">
-                                {{ ucfirst($order->status) }}
+                                @if($order->status == 'pending') Ожидает
+                                @elseif($order->status == 'processing') В обработке
+                                @elseif($order->status == 'completed') Завершён
+                                @elseif($order->status == 'cancelled') Отменён
+                                @else {{ ucfirst($order->status) }}
+                                @endif
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn-view">View Details</a>
+                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn-view">Подробнее</a>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     @else
-        <p style="padding: 2rem; text-align: center; color: #666;">No orders found.</p>
+        <p style="padding: 2rem; text-align: center; color: #666;">Заказы не найдены.</p>
     @endif
 </div>
 @endsection

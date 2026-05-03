@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manage Categories')
+@section('title', 'Управление категориями')
 
 @section('content')
 <style>
@@ -116,18 +116,18 @@
     }
 </style>
 
-<h2 style="margin-bottom: 2rem;">Manage Categories</h2>
+<h2 style="margin-bottom: 2rem;">Управление категориями</h2>
 
 <!-- Create Category Form -->
 <div class="create-form">
-    <h3 style="margin-bottom: 1rem;">Create New Category</h3>
+    <h3 style="margin-bottom: 1rem;">Создать новую категорию</h3>
     <form action="{{ route('admin.categories.store') }}" method="POST" class="form-inline">
         @csrf
         <div class="form-group" style="flex: 1;">
-            <label for="name">Category Name</label>
+            <label for="name">Название категории</label>
             <input type="text" id="name" name="name" value="{{ old('name') }}" required>
         </div>
-        <button type="submit" class="btn-primary">Create Category</button>
+        <button type="submit" class="btn-primary">Создать категорию</button>
     </form>
 </div>
 
@@ -137,39 +137,39 @@
         @foreach($categories as $category)
             <div class="category-card">
                 <h3>{{ $category->name }}</h3>
-                <p>{{ $category->products_count }} product(s)</p>
+                <p>{{ $category->products_count }} товар(ов)</p>
                 
                 <div class="category-actions">
                     <button onclick="editCategory({{ $category->id }}, '{{ $category->name }}')" class="btn btn-edit">
-                        Edit
+                        Редактировать
                     </button>
-                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this category? This will only work if there are no products in this category.');">
+                    <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Вы уверены, что хотите удалить эту категорию? Это сработает только если в этой категории нет товаров.');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-delete">Delete</button>
+                        <button type="submit" class="btn btn-delete">Удалить</button>
                     </form>
                 </div>
             </div>
         @endforeach
     </div>
 @else
-    <p style="text-align: center; color: #666; padding: 2rem;">No categories found. Create your first category!</p>
+    <p style="text-align: center; color: #666; padding: 2rem;">Категории не найдены. Создайте первую категорию!</p>
 @endif
 
 <!-- Edit Modal -->
 <div id="editModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
     <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
-        <h3 style="margin-bottom: 1rem;">Edit Category</h3>
+        <h3 style="margin-bottom: 1rem;">Редактировать категорию</h3>
         <form id="editForm" method="POST">
             @csrf
             @method('PUT')
             <div class="form-group">
-                <label for="edit_name">Category Name</label>
+                <label for="edit_name">Название категории</label>
                 <input type="text" id="edit_name" name="name" required>
             </div>
             <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                <button type="submit" class="btn-primary">Update Category</button>
-                <button type="button" onclick="closeEditModal()" class="btn btn-edit" style="background-color: #6c757d;">Cancel</button>
+                <button type="submit" class="btn-primary">Обновить категорию</button>
+                <button type="button" onclick="closeEditModal()" class="btn btn-edit" style="background-color: #6c757d;">Отмена</button>
             </div>
         </form>
     </div>

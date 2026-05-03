@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Order Details')
+@section('title', 'Детали заказа')
 
 @section('content')
 <style>
@@ -131,82 +131,87 @@
 </style>
 
 <div style="margin-bottom: 2rem;">
-    <a href="{{ route('admin.orders.index') }}" style="color: #c94b8c; text-decoration: none;">← Back to Orders</a>
+    <a href="{{ route('admin.orders.index') }}" style="color: #c94b8c; text-decoration: none;">← Назад к заказам</a>
 </div>
 
 <div class="order-details">
     <div class="order-header">
         <div>
-            <h2>Order {{ $order->order_number }}</h2>
-            <p style="color: #666; margin-top: 0.5rem;">Placed on {{ $order->created_at->format('F d, Y \a\t H:i') }}</p>
+            <h2>Заказ {{ $order->order_number }}</h2>
+            <p style="color: #666; margin-top: 0.5rem;">Размещен {{ \Carbon\Carbon::parse($order->created_at)->translatedFormat('d F Y в H:i') }}</p>
         </div>
         <span class="status-badge status-{{ $order->status }}">
-            {{ ucfirst($order->status) }}
+            @if($order->status == 'pending') Ожидает
+            @elseif($order->status == 'processing') В обработке
+            @elseif($order->status == 'completed') Завершён
+            @elseif($order->status == 'cancelled') Отменён
+            @else {{ ucfirst($order->status) }}
+            @endif
         </span>
     </div>
     
     <div class="order-info-grid">
         <div class="info-block">
-            <h3>Customer Information</h3>
-            <p><strong>Name:</strong> {{ $order->customer_name }}</p>
+            <h3>Информация о клиенте</h3>
+            <p><strong>Имя:</strong> {{ $order->customer_name }}</p>
             <p><strong>Email:</strong> {{ $order->customer_email }}</p>
-            <p><strong>Phone:</strong> {{ $order->customer_phone }}</p>
+            <p><strong>Телефон:</strong> {{ $order->customer_phone }}</p>
         </div>
         
         <div class="info-block">
-            <h3>Delivery Address</h3>
+            <h3>Адрес доставки</h3>
             <p>{{ $order->delivery_address }}</p>
         </div>
         
         <div class="info-block">
-            <h3>Order Summary</h3>
-            <p><strong>Total Amount:</strong> ${{ number_format($order->total_amount, 2) }}</p>
-            <p><strong>Items:</strong> {{ $order->orderItems->count() }}</p>
+            <h3>Итоги заказа</h3>
+            <p><strong>Общая сумма:</strong> {{ format_price($order->total_amount) }}</p>
+            <p><strong>Товаров:</strong> {{ $order->orderItems->count() }}</p>
         </div>
     </div>
     
-    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Order Items</h3>
+    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Товары заказа</h3>
     <table class="items-table">
         <thead>
             <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
+                <th>Товар</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
             </tr>
         </thead>
         <tbody>
             @foreach($order->orderItems as $item)
                 <tr>
                     <td>{{ $item->product_name }}</td>
-                    <td>${{ number_format($item->price, 2) }}</td>
+                    <td>{{ format_price($item->price) }}</td>
                     <td>{{ $item->quantity }}</td>
-                    <td>${{ number_format($item->subtotal, 2) }}</td>
+                    <td>{{ format_price($item->subtotal) }}</td>
                 </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3" style="text-align: right;">Total:</td>
-                <td>${{ number_format($order->total_amount, 2) }}</td>
+                <td colspan="3" style="text-align: right;">Итого:</td>
+                <td>{{ format_price($order->total_amount) }}</td>
             </tr>
         </tfoot>
     </table>
     
     <div class="status-form">
-        <h3 style="margin-bottom: 1rem;">Update Order Status</h3>
+        <h3 style="margin-bottom: 1rem;">Обновить статус заказа</h3>
         <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
             @csrf
             @method('PUT')
             
             <select name="status" required>
-                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
-                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Ожидание</option>
+                <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>В обработке</option>
+                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Завершён</option>
+                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Отменён</option>
             </select>
             
-            <button type="submit" class="btn-primary">Update Status</button>
+            <button type="submit" class="btn-primary">Обновить статус</button>
         </form>
     </div>
 </div>

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Revenue Reports')
+@section('title', 'Отчёты о выручке')
 
 @section('content')
 <style>
@@ -139,7 +139,7 @@
     }
 </style>
 
-<h2 style="margin-bottom: 2rem;">Revenue Reports</h2>
+<h2 style="margin-bottom: 2rem;">Отчёты о выручке</h2>
 
 <div class="revenue-container">
     @php
@@ -154,55 +154,30 @@
     
     <div class="revenue-summary">
         <div class="summary-card">
-            <h3>Total Revenue (12 months)</h3>
-            <div class="value">${{ number_format($totalRevenue, 2) }}</div>
+            <h3>Общая выручка (12 месяцев)</h3>
+            <div class="value">{{ format_price($totalRevenue) }}</div>
         </div>
         
         <div class="summary-card">
-            <h3>Average Monthly</h3>
-            <div class="value">${{ number_format($averageRevenue, 2) }}</div>
+            <h3>Среднее за месяц</h3>
+            <div class="value">{{ format_price($averageRevenue) }}</div>
         </div>
         
         <div class="summary-card">
-            <h3>Best Month</h3>
-            <div class="value">${{ number_format($maxRevenue, 2) }}</div>
+            <h3>Лучший месяц</h3>
+            <div class="value">{{ format_price($maxRevenue) }}</div>
         </div>
     </div>
     
-    <!-- Revenue Chart -->
-    @if(count($revenueData) > 0)
-        <div class="chart-container">
-            <h3 style="margin-bottom: 1rem;">Monthly Revenue Chart</h3>
-            <div class="bar-chart">
-                @php
-                    $maxValue = max(array_map(function($item) {
-                        return (float) $item['total'];
-                    }, $revenueData));
-                @endphp
-                
-                @foreach($revenueData as $data)
-                    @php
-                        $height = $maxValue > 0 ? ((float) $data['total'] / $maxValue) * 100 : 0;
-                        $date = \Carbon\Carbon::parse($data['month'] . '-01');
-                    @endphp
-                    <div class="bar" style="height: {{ $height }}%;">
-                        <span class="bar-value">${{ number_format($data['total'], 0) }}</span>
-                        <span class="bar-label">{{ $date->format('M Y') }}</span>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
-    
     <!-- Revenue Table -->
-    <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Monthly Revenue Details</h3>
+    <h3 style="margin-bottom: 1rem;">Детализация выручки по месяцам</h3>
     
     @if(count($revenueData) > 0)
         <table class="revenue-table">
             <thead>
                 <tr>
-                    <th>Month</th>
-                    <th>Revenue</th>
+                    <th>Месяц</th>
+                    <th>Выручка</th>
                 </tr>
             </thead>
             <tbody>
@@ -211,20 +186,20 @@
                         $date = \Carbon\Carbon::parse($data['month'] . '-01');
                     @endphp
                     <tr>
-                        <td>{{ $date->format('F Y') }}</td>
-                        <td>${{ number_format($data['total'], 2) }}</td>
+                        <td>{{ $date->translatedFormat('F Y') }}</td>
+                        <td>{{ format_price($data['total']) }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td>Total</td>
-                    <td>${{ number_format($totalRevenue, 2) }}</td>
+                    <td>Итого</td>
+                    <td>{{ format_price($totalRevenue) }}</td>
                 </tr>
             </tfoot>
         </table>
     @else
-        <p style="text-align: center; color: #666; padding: 2rem;">No revenue data available for the last 12 months.</p>
+        <p style="text-align: center; color: #666; padding: 2rem;">Нет данных о выручке за последние 12 месяцев.</p>
     @endif
 </div>
 @endsection

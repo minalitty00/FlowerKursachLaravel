@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Create Product')
+@section('title', 'Создание товара')
 
 @section('content')
 <style>
@@ -63,29 +63,29 @@
 </style>
 
 <div style="margin-bottom: 2rem;">
-    <a href="{{ route('admin.products.index') }}" style="color: #c94b8c; text-decoration: none;">← Back to Products</a>
+    <a href="{{ route('admin.products.index') }}" style="color: #c94b8c; text-decoration: none;">← Назад к товарам</a>
 </div>
 
 <div class="form-container">
-    <h2 style="margin-bottom: 1.5rem;">Create New Product</h2>
+    <h2 style="margin-bottom: 1.5rem;">Создание нового товара</h2>
     
     <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <div class="form-group">
-            <label for="name">Product Name *</label>
+            <label for="name">Название товара *</label>
             <input type="text" id="name" name="name" value="{{ old('name') }}" required>
         </div>
         
         <div class="form-group">
-            <label for="description">Description *</label>
+            <label for="description">Описание *</label>
             <textarea id="description" name="description" required>{{ old('description') }}</textarea>
         </div>
         
         <div class="form-group">
-            <label for="category_id">Category *</label>
+            <label for="category_id">Категория *</label>
             <select id="category_id" name="category_id" required>
-                <option value="">Select a category</option>
+                <option value="">Выберите категорию</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
@@ -95,23 +95,23 @@
         </div>
         
         <div class="form-group">
-            <label for="price">Price ($) *</label>
+            <label for="price">Цена *</label>
             <input type="number" id="price" name="price" step="0.01" min="0.01" value="{{ old('price') }}" required>
         </div>
         
         <div class="form-group">
-            <label for="stock_quantity">Stock Quantity *</label>
+            <label for="stock_quantity">Количество на складе *</label>
             <input type="number" id="stock_quantity" name="stock_quantity" min="0" value="{{ old('stock_quantity', 0) }}" required>
         </div>
         
         <div class="form-group">
-            <label for="image">Product Image (JPEG, PNG, GIF, WebP - Max 5MB)</label>
+            <label for="image">Изображение товара (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
             <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
         </div>
         
         <div class="form-actions">
-            <button type="submit" class="btn-primary">Create Product</button>
-            <a href="{{ route('admin.products.index') }}" class="btn-secondary">Cancel</a>
+            <button type="submit" class="btn-primary">Создать товар</button>
+            <a href="{{ route('admin.products.index') }}" class="btn-secondary">Отмена</a>
         </div>
     </form>
 </div>
