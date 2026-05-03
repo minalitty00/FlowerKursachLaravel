@@ -1,414 +1,664 @@
-# Flower Shop System
-
-Полнофункциональная система цветочного магазина на Laravel с MariaDB. Включает RESTful API, клиентское веб-приложение на Blade и административную панель.
-
-## 📖 Документация
-
-**[📚 Полный индекс документации](DOCUMENTATION_INDEX.md)** - Навигация по всей документации проекта  
-**[🎯 Шпаргалка по командам](COMMANDS_CHEATSHEET.md)** - Быстрый справочник всех команд
-
-### Быстрые ссылки:
-- **[📊 Краткое резюме проекта](PROJECT_SUMMARY.md)** - Обзор всего проекта
-- **[⚡ Быстрое развертывание](QUICK_DEPLOY.md)** - 5 шагов до запуска проекта
-- **[📦 Полная инструкция по развертыванию](DEPLOYMENT_GUIDE.md)** - Подробное руководство для нового компьютера
-- **[❓ FAQ - Часто задаваемые вопросы](FAQ.md)** - Ответы на популярные вопросы
-- **[🔧 Исправление ошибки 419 в API](API_DOCS_FIX.md)** - Решение проблемы CSRF в Swagger UI
-- **[📚 Руководство по Laravel Spectrum](LARAVEL_SPECTRUM_GUIDE.md)** - Работа с API документацией
-- **[📋 Сводка установки Spectrum](SPECTRUM_INSTALLATION_SUMMARY.md)** - Краткая информация о Spectrum
-- **[📝 История изменений](CHANGELOG.md)** - Версии и изменения проекта
-
-## Возможности
-
-- 🌸 **Каталог товаров** - управление товарами с изображениями, категориями и остатками
-- 🛒 **Корзина покупок** - добавление товаров, управление количеством
-- 📦 **Обработка заказов** - создание заказов, отслеживание статусов
-- 👥 **Управление пользователями** - регистрация, аутентификация, роли (User/Admin)
-- 📊 **Отчеты о выручке** - ежемесячная статистика продаж
-- 🔐 **Безопасность** - CSRF защита, rate limiting, хэширование паролей
-- 📱 **Responsive дизайн** - адаптивный интерфейс для всех устройств
-- 📖 **API Документация** - автоматически генерируемая OpenAPI 3.0 документация
-
-## Технологический стек
-
-- **Backend**: Laravel 12.x, PHP 8.2+
-- **Database**: MariaDB (MySQL-compatible)
-- **Frontend**: Blade Templates, Tailwind CSS
-- **Asset Bundler**: Vite
-- **Authentication**: Laravel Session-based auth
-- **Testing**: PHPUnit
-
-## Требования к системе
-
-- PHP >= 8.2
-- Composer
-- Node.js >= 18.x и npm
-- MariaDB >= 10.6 или MySQL >= 8.0
-- Расширения PHP: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML
-
-## Установка
-
-### 1. Клонирование репозитория
-
-```bash
-git clone <repository-url>
-cd flower-shop-system
-```
-
-### 2. Установка зависимостей
-
-```bash
-# Установка PHP зависимостей
-composer install
-
-# Установка Node.js зависимостей
-npm install
-```
-
-### 3. Настройка окружения
-
-```bash
-# Копирование файла конфигурации
-cp .env.example .env
-
-# Генерация ключа приложения
-php artisan key:generate
-```
-
-### 4. Настройка базы данных
-
-Отредактируйте файл `.env` и укажите параметры подключения к MariaDB:
-
-```env
-DB_CONNECTION=mariadb
-DB_HOST=localhost
-DB_PORT=3306
-DB_DATABASE=flowershopdb
-DB_USERNAME=root
-DB_PASSWORD=your_password
-```
-
-Создайте базу данных:
-
-```bash
-# Войдите в MariaDB
-mysql -u root -p
-
-# Создайте базу данных
-CREATE DATABASE flowershopdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-EXIT;
-```
-
-### 5. Запуск миграций и сидеров
-
-```bash
-# Запуск миграций
-php artisan migrate
-
-# Заполнение базы данных начальными данными
-php artisan db:seed
-```
-
-
-
-Это создаст:
-- Тестового администратора (email: admin@example.com, password: password)
-- Базовые категории товаров (Розы, Тюльпаны, Лилии и т.д.)
-
-### 6. Настройка хранилища файлов
-
-```bash
-# Создание символической ссылки для публичного хранилища
-php artisan storage:link
-```
-
-Это создаст ссылку `public/storage` -> `storage/app/public` для доступа к загруженным изображениям.
-
-### 7. Запуск приложения
-
-Откройте два терминала:
-
-**Терминал 1 - Laravel сервер:**
-```bash
-php artisan serve
-```
-
-**Терминал 2 - Vite dev server:**
-```bash
-npm run dev
-```
-
-Приложение будет доступно по адресу: http://localhost:8000
-
-## API Документация
-
-Проект использует **Laravel Spectrum** для автоматической генерации OpenAPI 3.0 документации без необходимости писать аннотации.
-
-### Просмотр документации
-
-После запуска приложения, документация доступна по адресу:
-- **Swagger UI**: http://localhost:8000/api-docs
-
-### Генерация документации
-
-```bash
-# Windows PowerShell
-.\fix-openapi.ps1
-
-# Linux/Mac
-bash fix-openapi.sh
-
-# Или вручную:
-php artisan spectrum:generate --output=public/openapi.json
-```
-
-**Важно:** После генерации документации файл автоматически сохраняется в `public/openapi.json` и сразу доступен через браузер.
-
-### Режим разработки с автообновлением
-
-```bash
-# Запуск watcher с hot reload
-php artisan spectrum:watch
-
-# Документация будет автоматически обновляться при изменении кода
-# Посетите http://localhost:8080 для просмотра
-```
-
-### Возможности Laravel Spectrum
-
-- ✅ **Нулевая конфигурация** - работает из коробки без аннотаций
-- ✅ **Умное определение** - автоматически распознает FormRequest валидацию
-- ✅ **API Resources** - поддержка Laravel API Resources
-- ✅ **Обновление в реальном времени** - hot reload при изменениях
-- ✅ **Кэширование** - умное кэширование для быстрой генерации
-
-Документация автоматически включает:
-- Все API endpoints с параметрами запросов
-- Правила валидации из FormRequest классов
-- Структуры ответов
-- Коды ошибок и их описания
-- Требования аутентификации
-
-## Тестовые учетные данные
-
-### Администратор
-- Email: `admin@example.com`
-- Password: `password`
-
-### Обычный пользователь
-Зарегистрируйтесь через форму регистрации на сайте.
-
-## API Endpoints
-
-### Аутентификация
-- `POST /api/register` - Регистрация пользователя
-- `POST /api/login` - Вход в систему
-- `POST /api/logout` - Выход из системы
-
-### Товары
-- `GET /api/products` - Список товаров (с фильтрацией и поиском)
-- `GET /api/products/{id}` - Детали товара
-- `POST /api/products` - Создание товара (admin)
-- `PUT /api/products/{id}` - Обновление товара (admin)
-- `DELETE /api/products/{id}` - Удаление товара (admin)
-
-### Категории
-- `GET /api/categories` - Список категорий
-- `POST /api/categories` - Создание категории (admin)
-- `PUT /api/categories/{id}` - Обновление категории (admin)
-- `DELETE /api/categories/{id}` - Удаление категории (admin)
-
-### Корзина
-- `GET /api/cart` - Просмотр корзины
-- `POST /api/cart/add` - Добавление в корзину
-- `PUT /api/cart/update` - Обновление количества
-- `DELETE /api/cart/remove` - Удаление из корзины
-
-### Заказы
-- `GET /api/orders` - Список заказов (пользователя или всех для admin)
-- `GET /api/orders/{id}` - Детали заказа
-- `POST /api/orders` - Создание заказа
-- `PUT /api/orders/{id}/status` - Обновление статуса (admin)
-
-### Отчеты
-- `GET /api/admin/revenue` - Отчет о выручке (admin)
-
-## Веб-маршруты
-
-### Публичные страницы
-- `GET /` - Главная страница
-- `GET /products` - Каталог товаров
-- `GET /products/{id}` - Страница товара
-- `GET /login` - Страница входа
-- `GET /register` - Страница регистрации
-
-### Защищенные страницы (требуется аутентификация)
-- `GET /cart` - Корзина
-- `GET /orders` - История заказов
-- `GET /orders/{id}` - Детали заказа
-- `GET /checkout` - Оформление заказа
-
-### Административная панель (требуется роль admin)
-- `GET /admin/dashboard` - Панель управления
-- `GET /admin/products` - Управление товарами
-- `GET /admin/categories` - Управление категориями
-- `GET /admin/orders` - Управление заказами
-- `GET /admin/revenue` - Отчеты о выручке
-
-## Тестирование
-
-```bash
-# Запуск всех тестов
-php artisan test
-
-# Запуск только unit-тестов
-php artisan test --testsuite=Unit
-
-# Запуск только feature-тестов
-php artisan test --testsuite=Feature
-
-# Запуск с покрытием кода
-php artisan test --coverage
-```
-
-## Конфигурация
-
-### Сессии
-- Время жизни сессии: 120 минут
-- Драйвер: database
-- Корзина хранится в сессии
-
-### Хранилище файлов
-- Диск по умолчанию: public
-- Изображения товаров: `storage/app/public/products`
-- Максимальный размер изображения: 5 MB
-- Поддерживаемые форматы: JPEG, PNG, GIF, WebP
-
-### Безопасность
-- CSRF защита включена для всех POST/PUT/DELETE запросов
-- Rate limiting для API endpoints
-- Пароли хэшируются с помощью bcrypt
-- XSS защита через Blade escaping
-
-### Логирование
-- Канал: stack (single file)
-- Уровень: debug (в production рекомендуется error)
-- Логи сохраняются в `storage/logs/laravel.log`
-
-## Разработка
-
-### Компиляция ассетов
-
-```bash
-# Development mode с hot reload
-npm run dev
-
-# Production build
-npm run build
-```
-
-### Очистка кэша
-
-```bash
-# Очистка всех кэшей
-php artisan optimize:clear
-
-# Очистка конфигурации
-php artisan config:clear
-
-# Очистка маршрутов
-php artisan route:clear
-
-# Очистка views
-php artisan view:clear
-```
-
-### Создание нового администратора
-
-```bash
-php artisan tinker
-
-# В tinker:
-User::create([
-    'name' => 'Admin Name',
-    'email' => 'admin@example.com',
-    'password' => bcrypt('password'),
-    'role' => 'admin'
-]);
-```
-
-## Production Deployment
-
-### 1. Оптимизация
-
-```bash
-# Кэширование конфигурации
-php artisan config:cache
-
-# Кэширование маршрутов
-php artisan route:cache
-
-# Кэширование views
-php artisan view:cache
-
-# Компиляция ассетов
-npm run build
-```
-
-### 2. Настройка .env для production
-
-```env
-APP_ENV=production
-APP_DEBUG=false
-APP_URL=https://your-domain.com
-
-LOG_LEVEL=error
-
-# Используйте безопасные настройки сессии
-SESSION_SECURE_COOKIE=true
-SESSION_HTTP_ONLY=true
-SESSION_SAME_SITE=strict
-```
-
-### 3. Права доступа
-
-```bash
-# Установка правильных прав
-chmod -R 755 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
-```
-
-## Устранение неполадок
-
-### Ошибка "No application encryption key"
-```bash
-php artisan key:generate
-```
-
-### Ошибка "Class not found"
-```bash
-composer dump-autoload
-```
-
-### Ошибка подключения к базе данных
-- Проверьте параметры в `.env`
-- Убедитесь, что MariaDB запущен
-- Проверьте права пользователя БД
-
-### Изображения не отображаются
-```bash
-php artisan storage:link
-```
-
-### Ошибки миграций
-```bash
-# Откат всех миграций и повторный запуск
-php artisan migrate:fresh --seed
-```
-
-## Лицензия
-
-Этот проект использует Laravel framework, который распространяется под лицензией MIT.
-
-## Поддержка
-
-Для вопросов и поддержки создайте issue в репозитории проекта.
+--
+-- Script was generated by Devart dbForge Studio for MySQL, Version 2025.3.93.0
+-- Product home page: https://www.devart.com/dbforge/mysql/studio
+-- Script date 28.04.2026 12:30:39
+-- Server version: 12.2.2
+--
+
+--
+-- Disable foreign keys
+--
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+
+--
+-- Set SQL mode
+--
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+--
+-- Set character set the client will use to send SQL statements to the server
+--
+SET NAMES 'utf8';
+
+--
+-- Set default database
+--
+USE flowershopdb;
+
+--
+-- Drop table `cache`
+--
+DROP TABLE IF EXISTS cache;
+
+--
+-- Drop table `cache_locks`
+--
+DROP TABLE IF EXISTS cache_locks;
+
+--
+-- Drop table `failed_jobs`
+--
+DROP TABLE IF EXISTS failed_jobs;
+
+--
+-- Drop table `jobs`
+--
+DROP TABLE IF EXISTS jobs;
+
+--
+-- Drop table `job_batches`
+--
+DROP TABLE IF EXISTS job_batches;
+
+--
+-- Drop table `migrations`
+--
+DROP TABLE IF EXISTS migrations;
+
+--
+-- Drop table `password_reset_tokens`
+--
+DROP TABLE IF EXISTS password_reset_tokens;
+
+--
+-- Drop table `personal_access_tokens`
+--
+DROP TABLE IF EXISTS personal_access_tokens;
+
+--
+-- Drop table `sessions`
+--
+DROP TABLE IF EXISTS sessions;
+
+--
+-- Drop view `popular_products`
+--
+DROP VIEW IF EXISTS popular_products CASCADE;
+
+--
+-- Drop table `order_items`
+--
+DROP TABLE IF EXISTS order_items;
+
+--
+-- Drop view `monthly_revenue`
+--
+DROP VIEW IF EXISTS monthly_revenue CASCADE;
+
+--
+-- Drop table `orders`
+--
+DROP TABLE IF EXISTS orders;
+
+--
+-- Drop table `users`
+--
+DROP TABLE IF EXISTS users;
+
+--
+-- Drop table `products`
+--
+DROP TABLE IF EXISTS products;
+
+--
+-- Drop table `categories`
+--
+DROP TABLE IF EXISTS categories;
+
+--
+-- Set default database
+--
+USE flowershopdb;
+
+--
+-- Create table `categories`
+--
+CREATE TABLE categories (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  slug varchar(255) NOT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AUTO_INCREMENT = 77,
+AVG_ROW_LENGTH = 8192,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `categories_name_unique` on table `categories`
+--
+ALTER TABLE categories
+ADD UNIQUE INDEX categories_name_unique (name);
+
+--
+-- Create index `categories_slug_index` on table `categories`
+--
+ALTER TABLE categories
+ADD INDEX categories_slug_index (slug);
+
+--
+-- Create index `categories_slug_unique` on table `categories`
+--
+ALTER TABLE categories
+ADD UNIQUE INDEX categories_slug_unique (slug);
+
+--
+-- Create table `products`
+--
+CREATE TABLE products (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  description text NOT NULL,
+  price decimal(10, 2) NOT NULL,
+  image_path varchar(255) DEFAULT NULL,
+  category_id bigint(20) UNSIGNED NOT NULL,
+  stock_quantity int(10) UNSIGNED NOT NULL DEFAULT 0,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AUTO_INCREMENT = 85,
+AVG_ROW_LENGTH = 8192,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `products_category_id_index` on table `products`
+--
+ALTER TABLE products
+ADD INDEX products_category_id_index (category_id);
+
+--
+-- Create index `products_created_at_index` on table `products`
+--
+ALTER TABLE products
+ADD INDEX products_created_at_index (created_at);
+
+--
+-- Create index `products_stock_quantity_index` on table `products`
+--
+ALTER TABLE products
+ADD INDEX products_stock_quantity_index (stock_quantity);
+
+--
+-- Create foreign key
+--
+ALTER TABLE products
+ADD CONSTRAINT products_category_id_foreign FOREIGN KEY (category_id)
+REFERENCES categories (id);
+
+--
+-- Create table `users`
+--
+CREATE TABLE users (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  email varchar(255) NOT NULL,
+  email_verified_at timestamp NULL DEFAULT NULL,
+  password varchar(255) NOT NULL,
+  role enum ('user', 'admin') NOT NULL DEFAULT 'user',
+  remember_token varchar(100) DEFAULT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AUTO_INCREMENT = 109,
+AVG_ROW_LENGTH = 5461,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `users_email_index` on table `users`
+--
+ALTER TABLE users
+ADD INDEX users_email_index (email);
+
+--
+-- Create index `users_email_unique` on table `users`
+--
+ALTER TABLE users
+ADD UNIQUE INDEX users_email_unique (email);
+
+--
+-- Create index `users_role_index` on table `users`
+--
+ALTER TABLE users
+ADD INDEX users_role_index (role);
+
+--
+-- Create table `orders`
+--
+CREATE TABLE orders (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id bigint(20) UNSIGNED NOT NULL,
+  order_number varchar(50) NOT NULL,
+  total_amount decimal(10, 2) NOT NULL,
+  status enum ('pending', 'processing', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+  customer_name varchar(255) NOT NULL,
+  customer_email varchar(255) NOT NULL,
+  customer_phone varchar(20) NOT NULL,
+  delivery_address text NOT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AUTO_INCREMENT = 53,
+AVG_ROW_LENGTH = 5461,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `orders_created_at_index` on table `orders`
+--
+ALTER TABLE orders
+ADD INDEX orders_created_at_index (created_at);
+
+--
+-- Create index `orders_order_number_index` on table `orders`
+--
+ALTER TABLE orders
+ADD INDEX orders_order_number_index (order_number);
+
+--
+-- Create index `orders_order_number_unique` on table `orders`
+--
+ALTER TABLE orders
+ADD UNIQUE INDEX orders_order_number_unique (order_number);
+
+--
+-- Create index `orders_status_index` on table `orders`
+--
+ALTER TABLE orders
+ADD INDEX orders_status_index (status);
+
+--
+-- Create index `orders_user_id_index` on table `orders`
+--
+ALTER TABLE orders
+ADD INDEX orders_user_id_index (user_id);
+
+--
+-- Create foreign key
+--
+ALTER TABLE orders
+ADD CONSTRAINT orders_user_id_foreign FOREIGN KEY (user_id)
+REFERENCES users (id) ON DELETE CASCADE;
+
+--
+-- Create view `monthly_revenue`
+--
+CREATE
+DEFINER = 'root'@'localhost'
+VIEW monthly_revenue
+AS
+SELECT
+  YEAR(`orders`.`created_at`) AS `year`,
+  MONTH(`orders`.`created_at`) AS `month`,
+  COUNT(0) AS `order_count`,
+  SUM(`orders`.`total_amount`) AS `total_revenue`
+FROM `orders`
+WHERE `orders`.`status` = 'delivered'
+GROUP BY YEAR(`orders`.`created_at`),
+         MONTH(`orders`.`created_at`)
+ORDER BY YEAR(`orders`.`created_at`) DESC, MONTH(`orders`.`created_at`) DESC;
+
+--
+-- Create table `order_items`
+--
+CREATE TABLE order_items (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  order_id bigint(20) UNSIGNED NOT NULL,
+  product_id bigint(20) UNSIGNED NOT NULL,
+  product_name varchar(255) NOT NULL,
+  quantity int(10) UNSIGNED NOT NULL,
+  price decimal(10, 2) NOT NULL,
+  subtotal decimal(10, 2) NOT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AUTO_INCREMENT = 7,
+AVG_ROW_LENGTH = 5461,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `order_items_order_id_index` on table `order_items`
+--
+ALTER TABLE order_items
+ADD INDEX order_items_order_id_index (order_id);
+
+--
+-- Create index `order_items_product_id_index` on table `order_items`
+--
+ALTER TABLE order_items
+ADD INDEX order_items_product_id_index (product_id);
+
+--
+-- Create foreign key
+--
+ALTER TABLE order_items
+ADD CONSTRAINT order_items_order_id_foreign FOREIGN KEY (order_id)
+REFERENCES orders (id) ON DELETE CASCADE;
+
+--
+-- Create foreign key
+--
+ALTER TABLE order_items
+ADD CONSTRAINT order_items_product_id_foreign FOREIGN KEY (product_id)
+REFERENCES products (id);
+
+--
+-- Create view `popular_products`
+--
+CREATE
+DEFINER = 'root'@'localhost'
+VIEW popular_products
+AS
+SELECT
+  `p`.`id` AS `id`,
+  `p`.`name` AS `name`,
+  `p`.`price` AS `price`,
+  COUNT(`oi`.`id`) AS `times_ordered`,
+  SUM(`oi`.`quantity`) AS `total_quantity_sold`
+FROM (`products` `p`
+  LEFT JOIN `order_items` `oi`
+    ON (`p`.`id` = `oi`.`product_id`))
+GROUP BY `p`.`id`
+ORDER BY SUM(`oi`.`quantity`) DESC LIMIT 10;
+
+--
+-- Create table `sessions`
+--
+CREATE TABLE sessions (
+  id varchar(255) NOT NULL,
+  user_id bigint(20) UNSIGNED DEFAULT NULL,
+  ip_address varchar(45) DEFAULT NULL,
+  user_agent text DEFAULT NULL,
+  payload longtext NOT NULL,
+  last_activity int(11) NOT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AVG_ROW_LENGTH = 16384,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `sessions_last_activity_index` on table `sessions`
+--
+ALTER TABLE sessions
+ADD INDEX sessions_last_activity_index (last_activity);
+
+--
+-- Create index `sessions_user_id_index` on table `sessions`
+--
+ALTER TABLE sessions
+ADD INDEX sessions_user_id_index (user_id);
+
+--
+-- Create table `personal_access_tokens`
+--
+CREATE TABLE personal_access_tokens (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  tokenable_type varchar(255) NOT NULL,
+  tokenable_id bigint(20) UNSIGNED NOT NULL,
+  name text NOT NULL,
+  token varchar(64) NOT NULL,
+  abilities text DEFAULT NULL,
+  last_used_at timestamp NULL DEFAULT NULL,
+  expires_at timestamp NULL DEFAULT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  updated_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `personal_access_tokens_expires_at_index` on table `personal_access_tokens`
+--
+ALTER TABLE personal_access_tokens
+ADD INDEX personal_access_tokens_expires_at_index (expires_at);
+
+--
+-- Create index `personal_access_tokens_token_unique` on table `personal_access_tokens`
+--
+ALTER TABLE personal_access_tokens
+ADD UNIQUE INDEX personal_access_tokens_token_unique (token);
+
+--
+-- Create index `personal_access_tokens_tokenable_type_tokenable_id_index` on table `personal_access_tokens`
+--
+ALTER TABLE personal_access_tokens
+ADD INDEX personal_access_tokens_tokenable_type_tokenable_id_index (tokenable_type, tokenable_id);
+
+--
+-- Create table `password_reset_tokens`
+--
+CREATE TABLE password_reset_tokens (
+  email varchar(255) NOT NULL,
+  token varchar(255) NOT NULL,
+  created_at timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (email)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create table `migrations`
+--
+CREATE TABLE migrations (
+  id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  migration varchar(255) NOT NULL,
+  batch int(11) NOT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+AUTO_INCREMENT = 9,
+AVG_ROW_LENGTH = 2048,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create table `job_batches`
+--
+CREATE TABLE job_batches (
+  id varchar(255) NOT NULL,
+  name varchar(255) NOT NULL,
+  total_jobs int(11) NOT NULL,
+  pending_jobs int(11) NOT NULL,
+  failed_jobs int(11) NOT NULL,
+  failed_job_ids longtext NOT NULL,
+  options mediumtext DEFAULT NULL,
+  cancelled_at int(11) DEFAULT NULL,
+  created_at int(11) NOT NULL,
+  finished_at int(11) DEFAULT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create table `jobs`
+--
+CREATE TABLE jobs (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  queue varchar(255) NOT NULL,
+  payload longtext NOT NULL,
+  attempts tinyint(3) UNSIGNED NOT NULL,
+  reserved_at int(10) UNSIGNED DEFAULT NULL,
+  available_at int(10) UNSIGNED NOT NULL,
+  created_at int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `jobs_queue_index` on table `jobs`
+--
+ALTER TABLE jobs
+ADD INDEX jobs_queue_index (queue);
+
+--
+-- Create table `failed_jobs`
+--
+CREATE TABLE failed_jobs (
+  id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  uuid varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  queue text NOT NULL,
+  payload longtext NOT NULL,
+  exception longtext NOT NULL,
+  failed_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (id)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create index `failed_jobs_uuid_unique` on table `failed_jobs`
+--
+ALTER TABLE failed_jobs
+ADD UNIQUE INDEX failed_jobs_uuid_unique (uuid);
+
+--
+-- Create table `cache_locks`
+--
+CREATE TABLE cache_locks (
+  `key` varchar(255) NOT NULL,
+  owner varchar(255) NOT NULL,
+  expiration int(11) NOT NULL,
+  PRIMARY KEY (`key`)
+)
+ENGINE = INNODB,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+--
+-- Create table `cache`
+--
+CREATE TABLE cache (
+  `key` varchar(255) NOT NULL,
+  value mediumtext NOT NULL,
+  expiration int(11) NOT NULL,
+  PRIMARY KEY (`key`)
+)
+ENGINE = INNODB,
+AVG_ROW_LENGTH = 8192,
+CHARACTER SET utf8mb4,
+COLLATE utf8mb4_unicode_ci,
+ROW_FORMAT = DYNAMIC;
+
+-- 
+-- Dumping data for table categories
+--
+INSERT INTO categories(id, name, slug, created_at, updated_at) VALUES
+(73, 'Розы', 'rozy', '2026-04-19 16:20:48', '2026-04-26 18:03:45'),
+(76, 'Лилии', 'lilii', '2026-04-19 16:47:34', '2026-04-26 18:03:35');
+
+-- 
+-- Dumping data for table users
+--
+INSERT INTO users(id, name, email, email_verified_at, password, role, remember_token, created_at, updated_at) VALUES
+(105, 'Admin', 'admin@flowershop.com', NULL, '$2y$12$BO8qXkeleQ5BZ6U9yUPWoeCeCxJvcya48LcqpDFNrB8CuN8lGwtpW', 'user', NULL, '2026-04-19 16:06:48', '2026-04-19 16:06:48'),
+(106, 'София', 'sonab2412@gmail.com', NULL, '$2y$12$t2l1tA.DXBASspP52QBoK.woft21bttYNf3B9i3F0IYNG3vZOzW0O', 'admin', 'HZGWSTxAXNTp0fjKhcLJtx0qDcmaeWDxYREZtejH7hEnRNrUjkpKlaNhfg7f', '2026-04-19 16:17:08', '2026-04-19 16:17:08'),
+(107, 'Дарья', 'daria@gmail.com', NULL, '$2y$12$la5Kal6GCRFc9xRsxzbVMeXqGiqF4XkhZLJ5gd6nY1Fu679SlX0jK', 'user', NULL, '2026-04-19 16:54:59', '2026-04-19 16:54:59'),
+(108, 'string', 'user@example.com', NULL, '$2y$12$anmK4F0cuDNOzb2r28LeUOaR9jpYFK84xFi49hxiPgU/UvwjXF5XS', 'user', NULL, '2026-04-26 18:49:03', '2026-04-26 18:49:03');
+
+-- 
+-- Dumping data for table products
+--
+INSERT INTO products(id, name, description, price, image_path, category_id, stock_quantity, created_at, updated_at) VALUES
+(81, 'Розы белые', 'Красивые белые розы в минималистичном оформлении', 3450.00, 'products/SzlbvuwOwFpn1Uz9c1DUi1R3bvmM5Q0hQU3zvNi5.jpg', 73, 6, '2026-04-19 16:25:30', '2026-04-26 18:02:42'),
+(84, 'Лилии белые (1 ветка)', 'Утончённые белые лилии', 700.00, 'products/sk9zEZcJhA7VX0dKQhEmUeOetgvtvt01ojRYezom.jpg', 76, 3, '2026-04-19 16:49:55', '2026-04-23 21:16:16');
+
+-- 
+-- Dumping data for table orders
+--
+INSERT INTO orders(id, user_id, order_number, total_amount, status, customer_name, customer_email, customer_phone, delivery_address, created_at, updated_at) VALUES
+(50, 107, 'ORD-20260419-40563', 700.00, 'completed', 'Дарья', 'daria@gmail.com', '+78905654793', 'Пасьетская, 34, 5', '2026-04-19 16:56:42', '2026-04-19 17:04:35'),
+(51, 106, 'ORD-20260423-76589', 700.00, 'completed', 'София', 'sonab2412@gmail.com', '89502815048', ',eknf< djdsbv', '2026-04-23 21:16:15', '2026-04-23 21:17:26'),
+(52, 106, 'ORD-20260426-65680', 3450.00, 'pending', 'София', 'sonab2412@gmail.com', '+6747475663', 'аварврррррркрв', '2026-04-26 18:02:42', '2026-04-26 18:02:42');
+
+-- 
+-- Dumping data for table sessions
+--
+INSERT INTO sessions(id, user_id, ip_address, user_agent, payload, last_activity) VALUES
+('1DwCCA2X9cH9KYEwCG5dssOBp7RFD4IQWEWwow3N', 106, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNWM4Yk9TWWFFcnppamh5SjRDbnRNYU05cmJMVUJubU5KT3lMS0k4UCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hcGktZG9jcyI7czo1OiJyb3V0ZSI7czo4OiJhcGkuZG9jcyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEwNjt9', 1777194608);
+
+-- Table flowershopdb.personal_access_tokens does not contain any data (it is empty)
+
+-- Table flowershopdb.password_reset_tokens does not contain any data (it is empty)
+
+-- 
+-- Dumping data for table order_items
+--
+INSERT INTO order_items(id, order_id, product_id, product_name, quantity, price, subtotal, created_at, updated_at) VALUES
+(4, 50, 84, 'Лилии белые (1 ветка)', 1, 700.00, 700.00, '2026-04-19 16:56:42', '2026-04-19 16:56:42'),
+(5, 51, 84, 'Лилии белые (1 ветка)', 1, 700.00, 700.00, '2026-04-23 21:16:15', '2026-04-23 21:16:15'),
+(6, 52, 81, 'Розы белые', 1, 3450.00, 3450.00, '2026-04-26 18:02:42', '2026-04-26 18:02:42');
+
+-- 
+-- Dumping data for table migrations
+--
+INSERT INTO migrations(id, migration, batch) VALUES
+(1, '0001_01_01_000000_create_users_table', 1),
+(2, '0001_01_01_000001_create_cache_table', 1),
+(3, '0001_01_01_000002_create_jobs_table', 1),
+(4, '2026_04_19_122621_create_categories_table', 1),
+(5, '2026_04_19_122709_create_products_table', 1),
+(6, '2026_04_19_122744_create_orders_table', 1),
+(7, '2026_04_19_122833_create_order_items_table', 1),
+(8, '2026_04_19_130159_create_personal_access_tokens_table', 1);
+
+-- Table flowershopdb.job_batches does not contain any data (it is empty)
+
+-- Table flowershopdb.jobs does not contain any data (it is empty)
+
+-- Table flowershopdb.failed_jobs does not contain any data (it is empty)
+
+-- Table flowershopdb.cache_locks does not contain any data (it is empty)
+
+-- 
+-- Dumping data for table cache
+--
+INSERT INTO cache(`key`, value, expiration) VALUES
+('flora_cache_1b1e12c9a6a9680e58ebdf901f57e10f', 'i:1;', 1777194664),
+('flora_cache_1b1e12c9a6a9680e58ebdf901f57e10f:timer', 'i:1777194664;', 1777194664);
+
+--
+-- Restore previous SQL mode
+--
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+
+--
+-- Enable foreign keys
+--
+/*!40014 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS */;
