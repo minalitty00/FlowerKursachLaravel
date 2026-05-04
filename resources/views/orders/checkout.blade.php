@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout')
+@section('title', 'Оформление заказа')
 
 @section('content')
 <style>
@@ -202,8 +202,8 @@
 
 <div class="checkout-container">
     <div class="page-header">
-        <h1>Checkout</h1>
-        <p>Complete your order</p>
+        <h1>Оформление заказа</h1>
+        <p>Заполните данные для оформления</p>
     </div>
 
     <div class="checkout-grid">
@@ -213,10 +213,10 @@
                 @csrf
                 
                 <div class="form-section">
-                    <h2 class="section-title">Customer Information</h2>
+                    <h2 class="section-title">Информация о покупателе</h2>
                     
                     <div class="form-group">
-                        <label for="customer_name" class="form-label">Full Name *</label>
+                        <label for="customer_name" class="form-label">ФИО *</label>
                         <input 
                             type="text" 
                             id="customer_name" 
@@ -231,7 +231,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="email" class="form-label">Email Address *</label>
+                        <label for="email" class="form-label">Email *</label>
                         <input 
                             type="email" 
                             id="email" 
@@ -246,7 +246,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number *</label>
+                        <label for="phone" class="form-label">Телефон *</label>
                         <input 
                             type="tel" 
                             id="phone" 
@@ -262,10 +262,10 @@
                 </div>
                 
                 <div class="form-section">
-                    <h2 class="section-title">Delivery Information</h2>
+                    <h2 class="section-title">Информация о доставке</h2>
                     
                     <div class="form-group">
-                        <label for="address" class="form-label">Delivery Address *</label>
+                        <label for="address" class="form-label">Адрес доставки *</label>
                         <textarea 
                             id="address" 
                             name="address" 
@@ -277,17 +277,53 @@
                             <div class="error-message">{{ $message }}</div>
                         @enderror
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="delivery_date" class="form-label">Дата доставки *</label>
+                        <input 
+                            type="date" 
+                            id="delivery_date" 
+                            name="delivery_date" 
+                            class="form-input @error('delivery_date') error @enderror"
+                            value="{{ old('delivery_date') }}"
+                            min="{{ date('Y-m-d') }}"
+                            max="{{ date('Y-m-d', strtotime('+3 days')) }}"
+                            required
+                        >
+                        @error('delivery_date')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="delivery_time" class="form-label">Время доставки *</label>
+                        <select 
+                            id="delivery_time" 
+                            name="delivery_time" 
+                            class="form-input @error('delivery_time') error @enderror"
+                            required
+                        >
+                            <option value="">Выберите время</option>
+                            <option value="09:00-12:00" {{ old('delivery_time') == '09:00-12:00' ? 'selected' : '' }}>09:00 - 12:00</option>
+                            <option value="12:00-15:00" {{ old('delivery_time') == '12:00-15:00' ? 'selected' : '' }}>12:00 - 15:00</option>
+                            <option value="15:00-18:00" {{ old('delivery_time') == '15:00-18:00' ? 'selected' : '' }}>15:00 - 18:00</option>
+                            <option value="18:00-21:00" {{ old('delivery_time') == '18:00-21:00' ? 'selected' : '' }}>18:00 - 21:00</option>
+                        </select>
+                        @error('delivery_time')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn btn-primary">
-                    Place Order
+                    Оформить заказ
                 </button>
             </form>
         </div>
         
         <!-- Order Summary -->
         <div class="order-summary">
-            <h2 class="summary-title">Order Summary</h2>
+            <h2 class="summary-title">Итоги заказа</h2>
             
             <div class="summary-items">
                 @foreach($cartItems as $item)
@@ -302,11 +338,11 @@
                         
                         <div class="summary-item-details">
                             <div class="summary-item-name">{{ $item['product']->name }}</div>
-                            <div class="summary-item-quantity">Qty: {{ $item['quantity'] }}</div>
+                            <div class="summary-item-quantity">Кол-во: {{ $item['quantity'] }}</div>
                         </div>
                         
                         <div class="summary-item-price">
-                            ${{ number_format($item['subtotal'], 2) }}
+                            {{ format_price($item['subtotal']) }}
                         </div>
                     </div>
                 @endforeach
@@ -314,13 +350,13 @@
             
             <div class="summary-total">
                 <div class="total-row">
-                    <span>Total:</span>
-                    <span class="total-amount">${{ number_format($total, 2) }}</span>
+                    <span>Итого:</span>
+                    <span class="total-amount">{{ format_price($total) }}</span>
                 </div>
             </div>
             
             <a href="{{ route('cart.index') }}" class="btn btn-secondary">
-                Back to Cart
+                Вернуться в корзину
             </a>
         </div>
     </div>

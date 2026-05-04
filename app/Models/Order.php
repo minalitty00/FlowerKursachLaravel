@@ -21,6 +21,8 @@ class Order extends Model
         'customer_email',
         'customer_phone',
         'delivery_address',
+        'delivery_date',
+        'delivery_time',
     ];
 
     protected $casts = [

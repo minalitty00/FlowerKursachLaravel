@@ -272,8 +272,8 @@
                             @if($item->product && $item->product->image_path)
                                 <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product_name }}" class="order-item-image">
                             @else
-                                <div class="order-item-image" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                    🌸
+                                <div class="order-item-image" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #999;">
+                                    —
                                 </div>
                             @endif
                             <div class="order-item-details">

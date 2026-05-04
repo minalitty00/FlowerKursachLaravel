@@ -117,15 +117,17 @@ class OrderWebController extends Controller
                 customerName: $validated['customer_name'],
                 customerEmail: $validated['email'],
                 customerPhone: $validated['phone'],
-                deliveryAddress: $validated['address']
+                deliveryAddress: $validated['address'],
+                deliveryDate: $validated['delivery_date'] ?? null,
+                deliveryTime: $validated['delivery_time'] ?? null
             );
 
             return redirect()->route('orders.show', $order->id)
-                ->with('success', 'Order placed successfully! Order number: ' . $order->order_number);
+                ->with('success', 'Заказ успешно оформлен! Номер заказа: ' . $order->order_number);
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to create order: ' . $e->getMessage());
+                ->with('error', 'Не удалось создать заказ: ' . $e->getMessage());
         }
     }
 }

@@ -26,6 +26,13 @@ class StoreOrderRequest extends FormRequest
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:500',
+            'delivery_date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                'before_or_equal:+3 days',
+            ],
+            'delivery_time' => 'required|string',
         ];
     }
 }

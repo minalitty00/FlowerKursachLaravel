@@ -27,7 +27,9 @@ class OrderService
         string $customerName,
         string $customerEmail,
         string $customerPhone,
-        string $deliveryAddress
+        string $deliveryAddress,
+        ?string $deliveryDate = null,
+        ?string $deliveryTime = null
     ): Order {
         $cartItems = $this->cartService->getItems();
         
@@ -35,7 +37,7 @@ class OrderService
             throw new EmptyCartException();
         }
 
-        return DB::transaction(function () use ($userId, $customerName, $customerEmail, $customerPhone, $deliveryAddress, $cartItems) {
+        return DB::transaction(function () use ($userId, $customerName, $customerEmail, $customerPhone, $deliveryAddress, $cartItems, $deliveryDate, $deliveryTime) {
             // Check stock availability and lock products for update
             foreach ($cartItems as $item) {
                 $product = Product::where('id', $item['product_id'])
@@ -71,6 +73,8 @@ class OrderService
                 'customer_email' => $customerEmail,
                 'customer_phone' => $customerPhone,
                 'delivery_address' => $deliveryAddress,
+                'delivery_date' => $deliveryDate,
+                'delivery_time' => $deliveryTime,
             ]);
 
             // Create order items and decrease stock

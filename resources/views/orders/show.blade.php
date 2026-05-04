@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Order Details')
+@section('title', 'Детали заказа')
 
 @section('content')
 <style>
@@ -243,48 +243,72 @@
 
 <div class="order-container">
     <div class="breadcrumb">
-        <a href="{{ route('home') }}">Home</a> / 
-        <a href="{{ route('orders.index') }}">My Orders</a> / 
-        Order #{{ $order->order_number }}
+        <a href="{{ route('home') }}">Главная</a> / 
+        <a href="{{ route('orders.index') }}">Мои заказы</a> / 
+        Заказ №{{ $order->order_number }}
     </div>
     
     <div class="page-header">
-        <h1>Order Details</h1>
+        <h1>Детали заказа</h1>
     </div>
 
     <div class="order-detail">
         <div class="order-header">
-            <div class="order-number">Order #{{ $order->order_number }}</div>
+            <div class="order-number">Заказ №{{ $order->order_number }}</div>
             <div class="order-status status-{{ $order->status }}">
-                {{ ucfirst($order->status) }}
+                @if($order->status == 'pending') Ожидает
+                @elseif($order->status == 'processing') В обработке
+                @elseif($order->status == 'completed') Завершён
+                @elseif($order->status == 'cancelled') Отменён
+                @else {{ ucfirst($order->status) }}
+                @endif
             </div>
         </div>
         
         <!-- Order Information -->
         <div class="order-section">
-            <h2 class="section-title">Order Information</h2>
+            <h2 class="section-title">Информация о заказе</h2>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">Order Date</span>
-                    <span class="info-value">{{ $order->created_at->format('F d, Y') }}</span>
+                    <span class="info-label">Дата заказа</span>
+                    <span class="info-value">{{ \Carbon\Carbon::parse($order->created_at)->translatedFormat('d F Y') }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Order Time</span>
-                    <span class="info-value">{{ $order->created_at->format('h:i A') }}</span>
+                    <span class="info-label">Время заказа</span>
+                    <span class="info-value">{{ \Carbon\Carbon::parse($order->created_at)->format('H:i') }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Order Status</span>
-                    <span class="info-value">{{ ucfirst($order->status) }}</span>
+                    <span class="info-label">Статус заказа</span>
+                    <span class="info-value">
+                        @if($order->status == 'pending') Ожидает
+                        @elseif($order->status == 'processing') В обработке
+                        @elseif($order->status == 'completed') Завершён
+                        @elseif($order->status == 'cancelled') Отменён
+                        @else {{ ucfirst($order->status) }}
+                        @endif
+                    </span>
                 </div>
+                @if($order->delivery_date)
+                <div class="info-item">
+                    <span class="info-label">Дата доставки</span>
+                    <span class="info-value">{{ \Carbon\Carbon::parse($order->delivery_date)->translatedFormat('d F Y') }}</span>
+                </div>
+                @endif
+                @if($order->delivery_time)
+                <div class="info-item">
+                    <span class="info-label">Время доставки</span>
+                    <span class="info-value">{{ $order->delivery_time }}</span>
+                </div>
+                @endif
             </div>
         </div>
         
         <!-- Customer Information -->
         <div class="order-section">
-            <h2 class="section-title">Customer Information</h2>
+            <h2 class="section-title">Информация о покупателе</h2>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">Name</span>
+                    <span class="info-label">Имя</span>
                     <span class="info-value">{{ $order->customer_name }}</span>
                 </div>
                 <div class="info-item">
@@ -292,11 +316,11 @@
                     <span class="info-value">{{ $order->customer_email }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Phone</span>
+                    <span class="info-label">Телефон</span>
                     <span class="info-value">{{ $order->customer_phone }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Delivery Address</span>
+                    <span class="info-label">Адрес доставки</span>
                     <span class="info-value">{{ $order->delivery_address }}</span>
                 </div>
             </div>
@@ -304,14 +328,14 @@
         
         <!-- Order Items -->
         <div class="order-section">
-            <h2 class="section-title">Order Items</h2>
+            <h2 class="section-title">Товары заказа</h2>
             <table class="order-items-table">
                 <thead>
                     <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
+                        <th>Товар</th>
+                        <th>Цена</th>
+                        <th>Количество</th>
+                        <th>Сумма</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -322,8 +346,8 @@
                                     @if($item->product && $item->product->image_path)
                                         <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product_name }}" class="item-image">
                                     @else
-                                        <div class="item-image" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-                                            🌸
+                                        <div class="item-image" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #999;">
+                                            —
                                         </div>
                                     @endif
                                     <div class="item-name">
@@ -337,9 +361,9 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>${{ number_format($item->price, 2) }}</td>
+                            <td>{{ format_price($item->price) }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>${{ number_format($item->subtotal, 2) }}</td>
+                            <td>{{ format_price($item->subtotal) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -349,18 +373,18 @@
         <!-- Order Summary -->
         <div class="order-summary">
             <div class="summary-row total">
-                <span>Total Amount:</span>
-                <span class="amount">${{ number_format($order->total_amount, 2) }}</span>
+                <span>Итого:</span>
+                <span class="amount">{{ format_price($order->total_amount) }}</span>
             </div>
         </div>
         
         <!-- Actions -->
         <div class="order-actions">
             <a href="{{ route('orders.index') }}" class="btn btn-secondary">
-                Back to Orders
+                К списку заказов
             </a>
             <a href="{{ route('products.index') }}" class="btn btn-primary">
-                Continue Shopping
+                Продолжить покупки
             </a>
         </div>
     </div>
