@@ -47,10 +47,10 @@ class CartController extends Controller
             $this->cartService->addItem($validated['product_id'], $validated['quantity']);
 
             return redirect()->route('cart.index')
-                ->with('success', 'Product added to cart successfully');
+                ->with('success', 'Товар добавлен в корзину');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to add product to cart: ' . $e->getMessage());
+                ->with('error', 'Не удалось добавить товар в корзину: ' . $e->getMessage());
         }
     }
 
@@ -70,10 +70,10 @@ class CartController extends Controller
             $this->cartService->updateQuantity($validated['product_id'], $validated['quantity']);
 
             return redirect()->route('cart.index')
-                ->with('success', 'Cart updated successfully');
+                ->with('success', 'Корзина обновлена');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'Failed to update cart: ' . $e->getMessage());
+                ->with('error', 'Не удалось обновить корзину: ' . $e->getMessage());
         }
     }
 
@@ -91,6 +91,6 @@ class CartController extends Controller
         $this->cartService->removeItem($validated['product_id']);
 
         return redirect()->route('cart.index')
-            ->with('success', 'Product removed from cart successfully');
+            ->with('success', 'Товар удалён из корзины');
     }
 }
