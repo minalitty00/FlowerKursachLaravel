@@ -115,11 +115,6 @@ class OrderService
     {
         $order = Order::findOrFail($orderId);
         
-        // Validate status transitions
-        if (in_array($order->status, ['completed', 'cancelled'])) {
-            throw new \Exception("Cannot change status of {$order->status} order");
-        }
-
         $validStatuses = ['pending', 'processing', 'completed', 'cancelled'];
         if (!in_array($status, $validStatuses)) {
             throw new \Exception("Invalid status: {$status}");
