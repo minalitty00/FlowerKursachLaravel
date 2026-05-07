@@ -60,6 +60,7 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['web', 'admin'])->group(function () {
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+    Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 });
 
 // Revenue routes

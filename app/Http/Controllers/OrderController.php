@@ -141,4 +141,54 @@ class OrderController extends Controller
                 ->with('error', 'Не удалось обновить статус заказа: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Delete an order
+     * 
+     * DELETE /api/orders/{id}
+     * Admin only
+     */
+    public function destroy(Request $request, int $id)
+    {
+        $user = $request->user();
+        
+        if (!$user || !$user->isAdmin()) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Unauthorized. Admin access required.'
+                ], 403);
+            }
+            abort(403, 'Unauthorized. Admin access required.');
+        }
+
+        try {
+            $this->orderService->deleteOrder($id);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Order deleted successfully'
+                ]);
+            }
+
+            return redirect()->route('admin.orders.index')
+                ->with('success', 'Заказ успешно удалён!');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Order not found'
+                ], 404);
+            }
+            abort(404, 'Order not found');
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Failed to delete order',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->route('admin.orders.index')
+                ->with('error', 'Не удалось удалить заказ: ' . $e->getMessage());
+        }
+    }
 }

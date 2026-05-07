@@ -61,6 +61,7 @@ Route::middleware(['web', 'auth', 'admin'])->prefix('admin')->name('admin.')->gr
     Route::get('/orders', [\App\Http\Controllers\AdminController::class, 'orders'])->name('orders.index');
     Route::get('/orders/{id}', [\App\Http\Controllers\AdminController::class, 'showOrder'])->name('orders.show');
     Route::put('/orders/{id}/status', [\App\Http\Controllers\OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::delete('/orders/{id}', [\App\Http\Controllers\OrderController::class, 'destroy'])->name('orders.destroy');
     
     // Category management
     Route::get('/categories', [\App\Http\Controllers\AdminController::class, 'categories'])->name('categories.index');

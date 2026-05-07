@@ -71,10 +71,33 @@
         display: inline-block;
         font-size: 0.875rem;
         transition: opacity 0.3s;
+        margin-right: 0.5rem;
     }
     
     .btn-view:hover {
         opacity: 0.8;
+    }
+    
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.875rem;
+        transition: opacity 0.3s;
+        cursor: pointer;
+    }
+    
+    .btn-delete:hover {
+        opacity: 0.8;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
     }
     
     @media (max-width: 768px) {
@@ -124,7 +147,14 @@
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('admin.orders.show', $order->id) }}" class="btn-view">Подробнее</a>
+                            <div class="action-buttons">
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="btn-view">Подробнее</a>
+                                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-delete" onclick="return confirm('Вы уверены, что хотите удалить заказ №{{ $order->order_number }}?')">Удалить</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

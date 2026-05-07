@@ -133,6 +133,27 @@ class OrderService
     }
 
     /**
+     * Delete an order
+     */
+    public function deleteOrder(int $orderId): bool
+    {
+        $order = Order::findOrFail($orderId);
+        
+        // Delete order items first (due to foreign key constraints)
+        $order->orderItems()->delete();
+        
+        // Delete the order
+        $order->delete();
+        
+        \Illuminate\Support\Facades\Log::info('Order deleted', [
+            'order_id' => $orderId,
+            'order_number' => $order->order_number,
+        ]);
+        
+        return true;
+    }
+
+    /**
      * Calculate total amount for cart items
      */
     public function calculateTotal(array $cartItems): float
