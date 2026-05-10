@@ -49,7 +49,7 @@ class ProductController extends Controller
                     'name' => $product->name,
                     'description' => $product->description,
                     'price' => $product->price,
-                    'image_url' => $product->image_path ? asset('storage/' . $product->image_path) : null,
+                    'image_url' => $product->image_url,
                     'category' => [
                         'id' => $product->category->id,
                         'name' => $product->category->name,
@@ -81,7 +81,7 @@ class ProductController extends Controller
                 'name' => $product->name,
                 'description' => $product->description,
                 'price' => $product->price,
-                'image_url' => $product->image_path ? asset('storage/' . $product->image_path) : null,
+                'image_url' => $product->image_url,
                 'category' => [
                     'id' => $product->category->id,
                     'name' => $product->category->name,
@@ -106,8 +106,10 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
-        // Handle image upload
+        // Handle image upload or URL
         $imagePath = null;
+        $imageUrl = $validated['image_url'] ?? null;
+        
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
         }
@@ -119,6 +121,7 @@ class ProductController extends Controller
             'category_id' => $validated['category_id'],
             'stock_quantity' => $validated['stock_quantity'],
             'image_path' => $imagePath,
+            'image_url' => $imageUrl,
         ]);
 
         $product->load('category');
@@ -132,7 +135,7 @@ class ProductController extends Controller
                     'name' => $product->name,
                     'description' => $product->description,
                     'price' => $product->price,
-                    'image_url' => $product->image_path ? asset('storage/' . $product->image_path) : null,
+                    'image_url' => $product->image_url,
                     'category' => [
                         'id' => $product->category->id,
                         'name' => $product->category->name,
@@ -165,7 +168,7 @@ class ProductController extends Controller
 
         $validated = $request->validated();
 
-        // Handle image upload
+        // Handle image upload or URL
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($product->image_path) {
@@ -173,6 +176,15 @@ class ProductController extends Controller
             }
 
             $validated['image_path'] = $request->file('image')->store('products', 'public');
+            // Clear image_url if uploading new file
+            $validated['image_url'] = null;
+        } elseif ($request->has('image_url')) {
+            // If URL is provided, clear local image
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+                $validated['image_path'] = null;
+            }
+            $validated['image_url'] = $request->input('image_url');
         }
 
         $product->update($validated);
@@ -188,7 +200,7 @@ class ProductController extends Controller
                     'name' => $product->name,
                     'description' => $product->description,
                     'price' => $product->price,
-                    'image_url' => $product->image_path ? asset('storage/' . $product->image_path) : null,
+                    'image_url' => $product->image_url,
                     'category' => [
                         'id' => $product->category->id,
                         'name' => $product->category->name,
@@ -218,7 +230,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Delete associated image if exists
+        // Delete associated image if exists (only for local images)
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);
         }

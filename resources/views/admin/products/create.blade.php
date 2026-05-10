@@ -107,6 +107,13 @@
         <div class="form-group">
             <label for="image">Изображение товара (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
             <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
+            <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="image_url">URL изображения</label>
+            <input type="url" id="image_url" name="image_url" value="{{ old('image_url') }}" placeholder="https://example.com/image.jpg">
+            <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл</p>
         </div>
         
         <div class="form-actions">

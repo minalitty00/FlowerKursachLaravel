@@ -17,6 +17,7 @@ class Product extends Model
         'description',
         'price',
         'image_path',
+        'image_url',
         'category_id',
         'stock_quantity',
     ];
@@ -60,5 +61,17 @@ class Product extends Model
         }
         
         return $query->where('category_id', $categoryId);
+    }
+
+    /**
+     * Get the image URL (external URL or local path).
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        // Получаем сырое значение image_url из базы данных
+        $imageUrl = isset($this->attributes['image_url']) ? $this->attributes['image_url'] : null;
+        $imagePath = $this->getAttribute('image_path');
+        
+        return $imageUrl ?: ($imagePath ? asset('storage/' . $imagePath) : null);
     }
 }

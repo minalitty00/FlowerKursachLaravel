@@ -269,8 +269,8 @@
                     <div class="order-items-title">Товары ({{ $order->orderItems->count() }})</div>
                     @foreach($order->orderItems->take(3) as $item)
                         <div class="order-item">
-                            @if($item->product && $item->product->image_path)
-                                <img src="{{ asset('storage/' . $item->product->image_path) }}" alt="{{ $item->product_name }}" class="order-item-image">
+                            @if($item->product && $item->product->image_url)
+                                <img src="{{ $item->product->image_url }}" alt="{{ $item->product_name }}" class="order-item-image">
                             @else
                                 <div class="order-item-image" style="display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #999;">
                                     —
