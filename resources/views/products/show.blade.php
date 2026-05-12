@@ -14,16 +14,116 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     
-    .product-image-container {
+    /* Carousel Styles */
+    .carousel-container {
         position: relative;
     }
     
-    .product-image-large {
+    .carousel-main-image {
         width: 100%;
         height: 500px;
         object-fit: cover;
         border-radius: 8px;
         background-color: #f0f0f0;
+    }
+    
+    .carousel-thumbnails {
+        display: flex;
+        gap: 10px;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+    
+    .carousel-thumb {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: border-color 0.3s, transform 0.3s;
+    }
+    
+    .carousel-thumb:hover {
+        transform: scale(1.05);
+    }
+    
+    .carousel-thumb.active {
+        border-color: #c94b8c;
+    }
+    
+    .carousel-thumb-placeholder {
+        width: 80px;
+        height: 80px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+    
+    .carousel-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    .carousel-nav:hover {
+        background: #c94b8c;
+        color: white;
+    }
+    
+    .carousel-prev {
+        left: 10px;
+    }
+    
+    .carousel-next {
+        right: 10px;
+    }
+    
+    .carousel-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 1rem;
+    }
+    
+    .carousel-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ddd;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .carousel-dot.active {
+        background-color: #c94b8c;
+    }
+    
+    .no-image {
+        width: 100%;
+        height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+        background-color: #f0f0f0;
+        border-radius: 8px;
     }
     
     .product-details {
@@ -160,7 +260,8 @@
             padding: 1.5rem;
         }
         
-        .product-image-large {
+        .carousel-main-image,
+        .no-image {
             height: 300px;
         }
         
@@ -179,15 +280,93 @@
         .quantity-input {
             width: 100%;
         }
+        
+        .carousel-thumb {
+            width: 60px;
+            height: 60px;
+        }
     }
 </style>
 
 <div class="product-detail">
-    <div class="product-image-container">
-        @if($product->image_path)
-            <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-image-large">
+    <div class="carousel-container">
+        @php
+            $allImages = $product->all_images;
+            $hasImages = count($allImages) > 0;
+        @endphp
+        
+        @if($hasImages)
+            <!-- Main Image -->
+            <img id="mainImage" src="{{ $allImages[0] }}" alt="{{ $product->name }}" class="carousel-main-image">
+            
+            <!-- Navigation Arrows -->
+            <button class="carousel-nav carousel-prev" onclick="changeSlide(-1)">❮</button>
+            <button class="carousel-nav carousel-next" onclick="changeSlide(1)">❯</button>
+            
+            <!-- Thumbnails -->
+            <div class="carousel-thumbnails">
+                @foreach($allImages as $index => $image)
+                    <img src="{{ $image }}" 
+                         alt="{{ $product->name }}" 
+                         class="carousel-thumb {{ $index === 0 ? 'active' : '' }}"
+                         onclick="goToSlide({{ $index }})">
+                @endforeach
+            </div>
+            
+            <!-- Dots -->
+            <div class="carousel-dots">
+                @foreach($allImages as $index => $image)
+                    <div class="carousel-dot {{ $index === 0 ? 'active' : '' }}" 
+                         onclick="goToSlide({{ $index }})"></div>
+                @endforeach
+            </div>
+            
+            <script>
+                let currentSlide = 0;
+                const images = @json($allImages);
+                
+                function goToSlide(index) {
+                    currentSlide = index;
+                    document.getElementById('mainImage').src = images[currentSlide];
+                    updateActiveClasses();
+                }
+                
+                function changeSlide(direction) {
+                    currentSlide += direction;
+                    
+                    if (currentSlide < 0) {
+                        currentSlide = images.length - 1;
+                    } else if (currentSlide >= images.length) {
+                        currentSlide = 0;
+                    }
+                    
+                    document.getElementById('mainImage').src = images[currentSlide];
+                    updateActiveClasses();
+                }
+                
+                function updateActiveClasses() {
+                    // Update thumbnails
+                    document.querySelectorAll('.carousel-thumb').forEach((thumb, index) => {
+                        thumb.classList.toggle('active', index === currentSlide);
+                    });
+                    
+                    // Update dots
+                    document.querySelectorAll('.carousel-dot').forEach((dot, index) => {
+                        dot.classList.toggle('active', index === currentSlide);
+                    });
+                }
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowLeft') {
+                        changeSlide(-1);
+                    } else if (e.key === 'ArrowRight') {
+                        changeSlide(1);
+                    }
+                });
+            </script>
         @else
-            <div class="product-image-large" style="display: flex; align-items: center; justify-content: center; font-size: 5rem;">
+            <div class="no-image">
                 🌸
             </div>
         @endif

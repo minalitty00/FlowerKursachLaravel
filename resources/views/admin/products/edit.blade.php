@@ -51,6 +51,74 @@
         margin-top: 2rem;
     }
     
+    .image-section {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .image-section h3 {
+        margin-bottom: 1rem;
+        color: #333;
+        font-size: 1.1rem;
+    }
+    
+    .image-preview {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .preview-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 2px solid #ddd;
+        display: none;
+    }
+    
+    .preview-image.visible {
+        display: block;
+    }
+    
+    .current-images {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .current-image-item {
+        position: relative;
+    }
+    
+    .current-image-item img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 2px solid #ddd;
+    }
+    
+    .image-number {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        background: #c94b8c;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+    
     .btn-secondary {
         background-color: #6c757d;
         color: white;
@@ -111,23 +179,98 @@
             <input type="number" id="stock_quantity" name="stock_quantity" min="0" value="{{ old('stock_quantity', $product->stock_quantity) }}" required>
         </div>
         
-        <div class="form-group">
-            <label for="image">Изображение товара (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
-            @if($product->image_url)
-                <div style="margin-bottom: 0.5rem;">
-                    <p style="font-size: 0.875rem; color: #666;">Текущее изображение:</p>
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="current-image">
-                    <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">(Внешняя ссылка)</p>
-                </div>
-            @endif
-            <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
-            <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+        <!-- Текущие изображения -->
+        <div class="image-section">
+            <h3>Текущие изображения</h3>
+            <div class="current-images">
+                @if($product->image_url)
+                    <div class="current-image-item">
+                        <div class="image-number">1</div>
+                        <img src="{{ $product->image_url }}" alt="Основное изображение">
+                    </div>
+                @endif
+                
+                @if($product->image_url_2)
+                    <div class="current-image-item">
+                        <div class="image-number">2</div>
+                        <img src="{{ $product->image_url_2 }}" alt="Второе изображение">
+                    </div>
+                @endif
+                
+                @if($product->image_url_3)
+                    <div class="current-image-item">
+                        <div class="image-number">3</div>
+                        <img src="{{ $product->image_url_3 }}" alt="Третье изображение">
+                    </div>
+                @endif
+                
+                @if(!$product->image_url && !$product->image_url_2 && !$product->image_url_3)
+                    <p style="color: #666; font-style: italic;">Изображения не загружены</p>
+                @endif
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for="image_url">URL изображения</label>
-            <input type="url" id="image_url" name="image_url" value="{{ old('image_url', $product->image_url) }}" placeholder="https://example.com/image.jpg">
-            <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл или хотите сохранить текущее</p>
+        <!-- Основное изображение -->
+        <div class="image-section">
+            <h3>Основное изображение</h3>
+            
+            <div class="form-group">
+                <label for="image">Загрузить новый файл (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewImage(this, 'preview1')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_url">URL изображения</label>
+                <input type="url" id="image_url" name="image_url" value="{{ old('image_url', $product->image_url) }}" placeholder="https://example.com/image.jpg" oninput="previewUrl(this, 'preview1')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл или хотите сохранить текущее</p>
+            </div>
+            
+            <div class="image-preview">
+                <img id="preview1" class="preview-image" src="" alt="Предпросмотр">
+            </div>
+        </div>
+        
+        <!-- Второе изображение -->
+        <div class="image-section">
+            <h3>Второе изображение</h3>
+            
+            <div class="form-group">
+                <label for="image_2">Загрузить новый файл (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
+                <input type="file" id="image_2" name="image_2" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewImage(this, 'preview2')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_url_2">URL изображения</label>
+                <input type="url" id="image_url_2" name="image_url_2" value="{{ old('image_url_2', $product->image_url_2) }}" placeholder="https://example.com/image2.jpg" oninput="previewUrl(this, 'preview2')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл или хотите сохранить текущее</p>
+            </div>
+            
+            <div class="image-preview">
+                <img id="preview2" class="preview-image" src="" alt="Предпросмотр">
+            </div>
+        </div>
+        
+        <!-- Третье изображение -->
+        <div class="image-section">
+            <h3>Третье изображение</h3>
+            
+            <div class="form-group">
+                <label for="image_3">Загрузить новый файл (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
+                <input type="file" id="image_3" name="image_3" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewImage(this, 'preview3')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_url_3">URL изображения</label>
+                <input type="url" id="image_url_3" name="image_url_3" value="{{ old('image_url_3', $product->image_url_3) }}" placeholder="https://example.com/image3.jpg" oninput="previewUrl(this, 'preview3')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл или хотите сохранить текущее</p>
+            </div>
+            
+            <div class="image-preview">
+                <img id="preview3" class="preview-image" src="" alt="Предпросмотр">
+            </div>
         </div>
         
         <div class="form-actions">
@@ -136,4 +279,54 @@
         </div>
     </form>
 </div>
+
+<script>
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const file = input.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.add('visible');
+            }
+            
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '';
+            preview.classList.remove('visible');
+        }
+    }
+    
+    function previewUrl(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const url = input.value;
+        
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            preview.src = url;
+            preview.classList.add('visible');
+        } else {
+            preview.src = '';
+            preview.classList.remove('visible');
+        }
+    }
+    
+    // Инициализация предпросмотра для уже заполненных полей
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlInputs = [
+            {id: 'image_url', preview: 'preview1'},
+            {id: 'image_url_2', preview: 'preview2'},
+            {id: 'image_url_3', preview: 'preview3'}
+        ];
+        
+        urlInputs.forEach(item => {
+            const input = document.getElementById(item.id);
+            if (input && input.value) {
+                previewUrl(input, item.preview);
+            }
+        });
+    });
+</script>
 @endsection

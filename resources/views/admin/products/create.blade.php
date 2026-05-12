@@ -45,6 +45,39 @@
         margin-top: 2rem;
     }
     
+    .image-section {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .image-section h3 {
+        margin-bottom: 1rem;
+        color: #333;
+        font-size: 1.1rem;
+    }
+    
+    .image-preview {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .preview-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 2px solid #ddd;
+        display: none;
+    }
+    
+    .preview-image.visible {
+        display: block;
+    }
+    
     .btn-secondary {
         background-color: #6c757d;
         color: white;
@@ -104,16 +137,67 @@
             <input type="number" id="stock_quantity" name="stock_quantity" min="0" value="{{ old('stock_quantity', 0) }}" required>
         </div>
         
-        <div class="form-group">
-            <label for="image">Изображение товара (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
-            <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
-            <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+        <!-- Основное изображение -->
+        <div class="image-section">
+            <h3>Основное изображение</h3>
+            
+            <div class="form-group">
+                <label for="image">Загрузить файл (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewImage(this, 'preview1')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_url">URL изображения</label>
+                <input type="url" id="image_url" name="image_url" value="{{ old('image_url') }}" placeholder="https://example.com/image.jpg" oninput="previewUrl(this, 'preview1')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл</p>
+            </div>
+            
+            <div class="image-preview">
+                <img id="preview1" class="preview-image" src="" alt="Предпросмотр">
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for="image_url">URL изображения</label>
-            <input type="url" id="image_url" name="image_url" value="{{ old('image_url') }}" placeholder="https://example.com/image.jpg">
-            <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл</p>
+        <!-- Второе изображение -->
+        <div class="image-section">
+            <h3>Второе изображение</h3>
+            
+            <div class="form-group">
+                <label for="image_2">Загрузить файл (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
+                <input type="file" id="image_2" name="image_2" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewImage(this, 'preview2')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_url_2">URL изображения</label>
+                <input type="url" id="image_url_2" name="image_url_2" value="{{ old('image_url_2') }}" placeholder="https://example.com/image2.jpg" oninput="previewUrl(this, 'preview2')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл</p>
+            </div>
+            
+            <div class="image-preview">
+                <img id="preview2" class="preview-image" src="" alt="Предпросмотр">
+            </div>
+        </div>
+        
+        <!-- Третье изображение -->
+        <div class="image-section">
+            <h3>Третье изображение</h3>
+            
+            <div class="form-group">
+                <label for="image_3">Загрузить файл (JPEG, PNG, GIF, WebP - макс 5МБ)</label>
+                <input type="file" id="image_3" name="image_3" accept="image/jpeg,image/png,image/gif,image/webp" onchange="previewImage(this, 'preview3')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">ИЛИ используйте URL изображения ниже</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="image_url_3">URL изображения</label>
+                <input type="url" id="image_url_3" name="image_url_3" value="{{ old('image_url_3') }}" placeholder="https://example.com/image3.jpg" oninput="previewUrl(this, 'preview3')">
+                <p style="font-size: 0.875rem; color: #666; margin-top: 0.25rem;">Оставьте пустым, если загружаете файл</p>
+            </div>
+            
+            <div class="image-preview">
+                <img id="preview3" class="preview-image" src="" alt="Предпросмотр">
+            </div>
         </div>
         
         <div class="form-actions">
@@ -122,4 +206,49 @@
         </div>
     </form>
 </div>
+
+<script>
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const file = input.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.add('visible');
+            }
+            
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = '';
+            preview.classList.remove('visible');
+        }
+    }
+    
+    function previewUrl(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const url = input.value;
+        
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            preview.src = url;
+            preview.classList.add('visible');
+        } else {
+            preview.src = '';
+            preview.classList.remove('visible');
+        }
+    }
+    
+    // Инициализация предпросмотра для уже заполненных полей
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlInputs = ['image_url', 'image_url_2', 'image_url_3'];
+        urlInputs.forEach((inputId, index) => {
+            const input = document.getElementById(inputId);
+            if (input && input.value) {
+                previewUrl(input, `preview${index + 1}`);
+            }
+        });
+    });
+</script>
 @endsection

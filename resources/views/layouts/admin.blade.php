@@ -7,9 +7,10 @@
 
     <title>{{ config('app.name', 'Флора') }} - Админ - @yield('title', 'Панель управления')</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Fonts - Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -22,11 +23,52 @@
         }
         
         body {
-            font-family: 'Figtree', sans-serif;
-            line-height: 1.6;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            line-height: 1.7;
             color: #333;
             background-color: #60d18a;
             min-height: 100vh;
+        }
+        
+        /* Headings with Bold */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            color: #333;
+            line-height: 1.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        h4 {
+            font-size: 1.25rem;
+        }
+        
+        /* Links */
+        a {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        /* Buttons */
+        button, .btn {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+        }
+        
+        /* Form elements */
+        input, textarea, select {
+            font-family: 'Cormorant Garamond', serif;
         }
         
         .admin-layout {

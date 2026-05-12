@@ -195,8 +195,8 @@
     <div class="product-grid">
         @foreach($products as $product)
             <a href="{{ route('products.show', $product->id) }}" class="product-card">
-                @if($product->image_path)
-                    <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-image">
+                @if($product->image_url)
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-image">
                 @else
                     <div class="product-image" style="display: flex; align-items: center; justify-content: center; font-size: 3rem;">
                         🌸

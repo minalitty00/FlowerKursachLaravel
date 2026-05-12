@@ -117,8 +117,8 @@
                 @foreach($products as $product)
                     <tr>
                         <td>
-                            @if($product->image_path)
-                                <img src="{{ asset('storage/' . $product->image_path) }}" alt="{{ $product->name }}" class="product-image-thumb">
+                            @if($product->image_url)
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="product-image-thumb">
                             @else
                                 <div class="product-image-thumb" style="background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">
                                     —

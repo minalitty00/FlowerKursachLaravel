@@ -16,12 +16,6 @@ class OrderService
         private CartService $cartService
     ) {}
 
-    /**
-     * Create a new order from cart items
-     * 
-     * @throws EmptyCartException
-     * @throws InsufficientStockException
-     */
     public function createOrder(
         int $userId,
         string $customerName,
@@ -38,7 +32,6 @@ class OrderService
         }
 
         return DB::transaction(function () use ($userId, $customerName, $customerEmail, $customerPhone, $deliveryAddress, $cartItems, $deliveryDate, $deliveryTime) {
-            // Check stock availability and lock products for update
             foreach ($cartItems as $item) {
                 $product = Product::where('id', $item['product_id'])
                     ->lockForUpdate()
@@ -57,13 +50,9 @@ class OrderService
                 }
             }
 
-            // Calculate total
             $totalAmount = $this->calculateTotal($cartItems);
-
-            // Generate unique order number
             $orderNumber = $this->generateOrderNumber();
 
-            // Create order
             $order = Order::create([
                 'user_id' => $userId,
                 'order_number' => $orderNumber,
@@ -77,7 +66,6 @@ class OrderService
                 'delivery_time' => $deliveryTime,
             ]);
 
-            // Create order items and decrease stock
             foreach ($cartItems as $item) {
                 $product = Product::find($item['product_id']);
                 
@@ -90,11 +78,9 @@ class OrderService
                     'subtotal' => $product->price * $item['quantity'],
                 ]);
 
-                // Decrease stock atomically
                 $product->decrement('stock_quantity', $item['quantity']);
             }
 
-            // Clear cart after successful order creation
             $this->cartService->clear();
 
             Log::info('Order created successfully', [
@@ -108,12 +94,19 @@ class OrderService
         });
     }
 
-    /**
-     * Update order status
-     */
     public function updateOrderStatus(int $orderId, string $status): Order
     {
         $order = Order::findOrFail($orderId);
+        
+        // BLOCK COMPLETED ORDERS
+        if ($order->status === 'completed') {
+            throw new \Exception('Cannot change status of completed order');
+        }
+        
+        // BLOCK CANCELLED ORDERS
+        if ($order->status === 'cancelled') {
+            throw new \Exception('Cannot change status of cancelled order');
+        }
         
         $validStatuses = ['pending', 'processing', 'completed', 'cancelled'];
         if (!in_array($status, $validStatuses)) {
@@ -132,17 +125,11 @@ class OrderService
         return $order;
     }
 
-    /**
-     * Delete an order
-     */
     public function deleteOrder(int $orderId): bool
     {
         $order = Order::findOrFail($orderId);
         
-        // Delete order items first (due to foreign key constraints)
         $order->orderItems()->delete();
-        
-        // Delete the order
         $order->delete();
         
         \Illuminate\Support\Facades\Log::info('Order deleted', [
@@ -153,9 +140,6 @@ class OrderService
         return true;
     }
 
-    /**
-     * Calculate total amount for cart items
-     */
     public function calculateTotal(array $cartItems): float
     {
         $total = 0;
@@ -167,9 +151,6 @@ class OrderService
         return round($total, 2);
     }
 
-    /**
-     * Generate unique order number in format: ORD-YYYYMMDD-XXXXX
-     */
     private function generateOrderNumber(): string
     {
         $date = now()->format('Ymd');
@@ -177,7 +158,6 @@ class OrderService
         
         $orderNumber = "ORD-{$date}-{$random}";
         
-        // Ensure uniqueness
         while (Order::where('order_number', $orderNumber)->exists()) {
             $random = str_pad(random_int(0, 99999), 5, '0', STR_PAD_LEFT);
             $orderNumber = "ORD-{$date}-{$random}";

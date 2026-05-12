@@ -259,8 +259,8 @@
         <div class="cart-items">
             @foreach($items as $item)
                 <div class="cart-item">
-                    @if($item['product']->image_path)
-                        <img src="{{ asset('storage/' . $item['product']->image_path) }}" alt="{{ $item['product']->name }}" class="cart-item-image">
+                    @if($item['product']->image_url)
+                        <img src="{{ $item['product']->image_url }}" alt="{{ $item['product']->name }}" class="cart-item-image">
                     @else
                         <div class="cart-item-image" style="display: flex; align-items: center; justify-content: center; font-size: 2rem;">
                             🌸

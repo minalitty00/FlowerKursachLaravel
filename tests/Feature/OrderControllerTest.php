@@ -50,7 +50,9 @@ class OrderControllerTest extends TestCase
                 'customer_name' => 'John Doe',
                 'email' => 'john@example.com',
                 'phone' => '+1234567890',
-                'address' => '123 Main St, City, Country'
+                'address' => '123 Main St, City, Country',
+                'delivery_date' => now()->addDay()->format('Y-m-d'),
+                'delivery_time' => '10:00-12:00'
             ]);
 
         $response->assertStatus(201)

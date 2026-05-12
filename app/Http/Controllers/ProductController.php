@@ -106,12 +106,28 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
-        // Handle image upload or URL
+        // Handle main image upload or URL
         $imagePath = null;
         $imageUrl = $validated['image_url'] ?? null;
         
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+        // Handle second image upload or URL
+        $imagePath2 = null;
+        $imageUrl2 = $validated['image_url_2'] ?? null;
+        
+        if ($request->hasFile('image_2')) {
+            $imagePath2 = $request->file('image_2')->store('products', 'public');
+        }
+
+        // Handle third image upload or URL
+        $imagePath3 = null;
+        $imageUrl3 = $validated['image_url_3'] ?? null;
+        
+        if ($request->hasFile('image_3')) {
+            $imagePath3 = $request->file('image_3')->store('products', 'public');
         }
 
         $product = Product::create([
@@ -122,6 +138,10 @@ class ProductController extends Controller
             'stock_quantity' => $validated['stock_quantity'],
             'image_path' => $imagePath,
             'image_url' => $imageUrl,
+            'image_path_2' => $imagePath2,
+            'image_url_2' => $imageUrl2,
+            'image_path_3' => $imagePath3,
+            'image_url_3' => $imageUrl3,
         ]);
 
         $product->load('category');
@@ -168,7 +188,7 @@ class ProductController extends Controller
 
         $validated = $request->validated();
 
-        // Handle image upload or URL
+        // Handle main image upload or URL
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($product->image_path) {
@@ -185,6 +205,44 @@ class ProductController extends Controller
                 $validated['image_path'] = null;
             }
             $validated['image_url'] = $request->input('image_url');
+        }
+
+        // Handle second image upload or URL
+        if ($request->hasFile('image_2')) {
+            // Delete old image if exists
+            if ($product->image_path_2) {
+                Storage::disk('public')->delete($product->image_path_2);
+            }
+
+            $validated['image_path_2'] = $request->file('image_2')->store('products', 'public');
+            // Clear image_url_2 if uploading new file
+            $validated['image_url_2'] = null;
+        } elseif ($request->has('image_url_2')) {
+            // If URL is provided, clear local image
+            if ($product->image_path_2) {
+                Storage::disk('public')->delete($product->image_path_2);
+                $validated['image_path_2'] = null;
+            }
+            $validated['image_url_2'] = $request->input('image_url_2');
+        }
+
+        // Handle third image upload or URL
+        if ($request->hasFile('image_3')) {
+            // Delete old image if exists
+            if ($product->image_path_3) {
+                Storage::disk('public')->delete($product->image_path_3);
+            }
+
+            $validated['image_path_3'] = $request->file('image_3')->store('products', 'public');
+            // Clear image_url_3 if uploading new file
+            $validated['image_url_3'] = null;
+        } elseif ($request->has('image_url_3')) {
+            // If URL is provided, clear local image
+            if ($product->image_path_3) {
+                Storage::disk('public')->delete($product->image_path_3);
+                $validated['image_path_3'] = null;
+            }
+            $validated['image_url_3'] = $request->input('image_url_3');
         }
 
         $product->update($validated);
@@ -230,9 +288,17 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        // Delete associated image if exists (only for local images)
+        // Delete associated images if exists (only for local images)
         if ($product->image_path) {
             Storage::disk('public')->delete($product->image_path);
+        }
+        
+        if ($product->image_path_2) {
+            Storage::disk('public')->delete($product->image_path_2);
+        }
+        
+        if ($product->image_path_3) {
+            Storage::disk('public')->delete($product->image_path_3);
         }
 
         $product->delete();
