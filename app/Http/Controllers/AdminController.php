@@ -139,4 +139,39 @@ class AdminController extends Controller
 
         return view('admin.revenue', compact('revenueData'));
     }
+
+    /**
+     * Display user management page
+     * 
+     * GET /admin/users
+     */
+    public function users()
+    {
+        $users = User::orderBy('created_at', 'desc')->get();
+
+        return view('admin.users.index', compact('users'));
+    }
+
+    /**
+     * Update user role
+     * 
+     * PUT /admin/users/{id}/role
+     */
+    public function updateUserRole(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Prevent removing admin role from yourself
+        if ($user->id === auth()->id() && $request->role !== 'admin') {
+            return back()->with('error', 'Вы не можете снять с себя роль администратора');
+        }
+
+        $validated = $request->validate([
+            'role' => 'required|in:user,admin',
+        ]);
+
+        $user->update(['role' => $validated['role']]);
+
+        return back()->with('success', 'Роль пользователя обновлена');
+    }
 }

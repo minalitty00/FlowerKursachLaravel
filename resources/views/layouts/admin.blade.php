@@ -302,6 +302,11 @@
                         Отчеты о выручке
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                        Пользователи
+                    </a>
+                </li>
                 <li style="margin-top: 2rem; border-top: 1px solid #34495e; padding-top: 1rem;">
                     <a href="{{ route('home') }}">
                         Вернуться в магазин

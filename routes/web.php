@@ -71,4 +71,8 @@ Route::middleware(['web', 'auth', 'admin'])->prefix('admin')->name('admin.')->gr
     
     // Revenue reports
     Route::get('/revenue', [\App\Http\Controllers\AdminController::class, 'revenue'])->name('revenue');
+    
+    // User management
+    Route::get('/users', [\App\Http\Controllers\AdminController::class, 'users'])->name('users.index');
+    Route::put('/users/{id}/role', [\App\Http\Controllers\AdminController::class, 'updateUserRole'])->name('users.updateRole');
 });

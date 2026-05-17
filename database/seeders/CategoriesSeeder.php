@@ -13,16 +13,19 @@ class CategoriesSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Розы', 'slug' => 'roses'],
-            ['name' => 'Тюльпаны', 'slug' => 'tulips'],
-            ['name' => 'Лилии', 'slug' => 'lilies'],
-            ['name' => 'Орхидеи', 'slug' => 'orchids'],
-            ['name' => 'Букеты', 'slug' => 'bouquets'],
-            ['name' => 'Композиции', 'slug' => 'compositions'],
+            ['name' => 'Розы', 'slug' => 'rozy'],
+            ['name' => 'Тюльпаны', 'slug' => 'tyulpany'],
+            ['name' => 'Лилии', 'slug' => 'lilii'],
+            ['name' => 'Орхидеи', 'slug' => 'orkhidei'],
+            ['name' => 'Пионы', 'slug' => 'piony'],
+            ['name' => 'Хризантемы', 'slug' => 'khrizantemy'],
         ];
 
         foreach ($categories as $category) {
-            \App\Models\Category::create($category);
+            \App\Models\Category::updateOrCreate(
+                ['slug' => $category['slug']],
+                ['name' => $category['name']]
+            );
         }
     }
 }
